@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: estes_postgres
+    environment:
+      POSTGRES_USER: estes
+      POSTGRES_PASSWORD: estes
+      POSTGRES_DB: estes
+    ports:
+      - "5434:5432"
+    volumes:
+      - estes_pgdata:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U estes"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: estes_redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - estes_redisdata:/data
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+
+volumes:
+  estes_pgdata:
+  estes_redisdata:
