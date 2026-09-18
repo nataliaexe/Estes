@@ -90,3 +90,49 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* 3D Canvas optimizations */
+canvas {
+  touch-action: none;
+  outline: none;
+}
+
+/* Performance optimizations */
+@media (max-width: 768px) {
+  .reduced-motion * {
+    animation-duration: 0.5s !important;
+    transition-duration: 0.3s !important;
+  }
+}
+
+/* GPU acceleration for smooth animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* 3D Container optimizations */
+.three-container {
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .three-container canvas {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Smooth scrolling for 3D interactions */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Image and media optimizations */
+img, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
