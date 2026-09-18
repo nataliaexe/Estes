@@ -1,125 +1,145 @@
 import Link from "next/link";
-import MapaWrapper from "./componentes/MapaWrapper";
+import { ArrowRight, Sparkles, Play } from "lucide-react";
+import { SideRays } from "./componentes/efeitos/SideRays";
+import { WhatIs } from "./componentes/home/WhatIs";
+import { HowItWorks } from "./componentes/home/HowItWorks";
+import { FlagshipStories } from "./componentes/home/FlagshipStories";
+import { ScientificEngine } from "./componentes/home/ScientificEngine";
+import { RightsShield } from "./componentes/home/RightsShield";
+import { Numeros } from "./componentes/efeitos/Numeros";
+import { TresPilares } from "./componentes/efeitos/TresPilares";
+import { MapaInterativo } from "./componentes/efeitos/MapaInterativo";
+import { ScrollReveal } from "./componentes/efeitos/ScrollReveal";
 
-async function getDashboard() {
-  try {
-    const r = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/dashboard`,
-      { cache: "no-store" }
-    );
-    if (!r.ok) return null;
-    return r.json();
-  } catch {
-    return null;
-  }
-}
-
-export default async function Home() {
-  const dados = await getDashboard();
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-terra-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <header className="mb-6">
-          <h1 className="text-3xl font-bold text-verde-900">
-            Mapa de situações ambientais
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Veja o que está acontecendo na sua região e descubra como agir.
-          </p>
-        </header>
+    <div className="relative">
+      {/* HERO */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-elfo-creme via-elfo-creme to-elfo-verde-vivo/10 min-h-[85vh] flex items-center">
+        <SideRays origin="top-right" cor1="#4BF98D" cor2="#A68A42" />
+        <SideRays origin="bottom-left" cor1="#114224" cor2="#4BF98D" />
 
-        {dados && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <StatCard
-              valor={dados.total_casos}
-              rotulo="Casos no Atlas"
-              cor="verde"
-            />
-            <StatCard
-              valor={Object.keys(dados.casos_por_uf).length}
-              rotulo="Estados cobertos"
-              cor="terra"
-            />
-            <StatCard
-              valor={dados.casos_com_hardware}
-              rotulo="Com hardware"
-              cor="verde"
-            />
-            <StatCard
-              valor={dados.total_noticias}
-              rotulo="Notícias coletadas"
-              cor="terra"
-            />
+        <div className="relative max-w-7xl mx-auto px-6 py-20 w-full">
+          <div className="max-w-4xl">
+            <ScrollReveal>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-elfo-verde-escuro text-elfo-off-white text-sm font-medium mb-8">
+                <Sparkles size={14} className="text-elfo-verde-vivo" />
+                <span>Environmental citizenship platform</span>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.1}>
+              <h1 className="font-display font-black text-5xl md:text-7xl lg:text-8xl text-elfo-verde-escuro leading-[0.95] mb-6">
+                The right to{" "}
+                <span className="text-gradient-elfo">keep existing.</span>
+              </h1>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.2}>
+              <p className="text-xl md:text-2xl text-elfo-cinza max-w-3xl leading-relaxed mb-10">
+                We transform local waste into urgent solutions and guarantee
+                human rights through open scientific evidence.
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.3}>
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/atlas"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-elfo-verde-escuro text-elfo-off-white font-display font-bold text-lg hover:bg-elfo-verde-vivo hover:text-elfo-verde-escuro transition-all group"
+                >
+                  Explore the Atlas
+                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/explorar"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-elfo-verde-escuro text-elfo-verde-escuro font-display font-bold text-lg hover:bg-elfo-verde-escuro hover:text-elfo-off-white transition-all group"
+                >
+                  <Play size={18} />
+                  See how it works
+                </Link>
+              </div>
+            </ScrollReveal>
           </div>
-        )}
-
-        <div className="h-[600px] rounded-xl overflow-hidden shadow-lg mb-8">
-          <MapaWrapper />
         </div>
+      </section>
 
-        <section className="grid md:grid-cols-2 gap-6">
-          <Card
-            titulo="Atlas Brasileiro"
-            descricao="22 soluções que transformam recursos locais em respostas para problemas ambientais."
-            href="/atlas"
-            cta="Explorar Atlas"
-          />
-          <Card
-            titulo="Assistente Estes"
-            descricao="Descreva seu problema. A IA busca no Atlas + na web e sugere o que fazer."
-            href="/chat"
-            cta="Conversar com a IA"
-          />
-        </section>
+      {/* WHAT IS */}
+      <WhatIs />
 
-        <footer className="mt-12 text-center text-sm text-gray-500">
-          <p>
-            Estes — plataforma de cidadania ambiental · open source · Brasil
-          </p>
-        </footer>
-      </div>
+      {/* HOW IT WORKS */}
+      <HowItWorks />
+
+      {/* FLAGSHIP STORIES */}
+      <FlagshipStories />
+
+      {/* SCIENTIFIC ENGINE */}
+      <ScientificEngine />
+
+      {/* NUMBERS */}
+      <Numeros />
+
+      {/* MAP */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <ScrollReveal>
+            <div className="text-center mb-12">
+              <p className="text-xs uppercase tracking-[0.3em] text-elfo-dourado font-bold mb-4">
+                Real-time map
+              </p>
+              <h2 className="font-display font-black text-5xl md:text-6xl text-elfo-verde-escuro mb-4 leading-tight">
+                The Brazil that needs answers
+              </h2>
+              <p className="text-lg text-elfo-cinza max-w-2xl mx-auto">
+                Cases, measurements, and active fire spots — all in one place.
+              </p>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <MapaInterativo />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* 3 PILLARS */}
+      <TresPilares />
+
+      {/* RIGHTS SHIELD */}
+      <RightsShield />
+
+      {/* CTA FINAL */}
+      <section className="py-24 px-6 bg-elfo-verde-escuro text-elfo-off-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <ScrollReveal>
+            <h2 className="font-display font-black text-5xl md:text-6xl mb-6">
+              Start from your biome.
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-xl text-elfo-off-white/80 mb-10 max-w-2xl mx-auto">
+              Indigenous, farmer, researcher, or curious — the platform
+              speaks your language.
+            </p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link
+                href="/atlas"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-elfo-verde-vivo text-elfo-verde-escuro font-display font-bold text-lg hover:bg-elfo-off-white transition-all group"
+              >
+                See the Atlas
+                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/contribuir"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-elfo-off-white text-elfo-off-white font-display font-bold text-lg hover:bg-elfo-off-white hover:text-elfo-verde-escuro transition-all"
+              >
+                Contribute
+              </Link>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
     </div>
-  );
-}
-
-function StatCard({
-  valor,
-  rotulo,
-  cor,
-}: {
-  valor: number;
-  rotulo: string;
-  cor: "verde" | "terra";
-}) {
-  const bg = cor === "verde" ? "bg-verde-900" : "bg-terra-500";
-  return (
-    <div className={`${bg} text-white rounded-xl p-4 shadow`}>
-      <div className="text-3xl font-bold">{valor}</div>
-      <div className="text-xs mt-1 opacity-90">{rotulo}</div>
-    </div>
-  );
-}
-
-function Card({
-  titulo,
-  descricao,
-  href,
-  cta,
-}: {
-  titulo: string;
-  descricao: string;
-  href: string;
-  cta: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="block bg-white rounded-xl p-6 shadow hover:shadow-xl transition"
-    >
-      <h2 className="text-xl font-bold text-verde-900 mb-2">{titulo}</h2>
-      <p className="text-gray-600 text-sm mb-4">{descricao}</p>
-      <span className="text-verde-700 font-semibold">{cta} →</span>
-    </Link>
   );
 }

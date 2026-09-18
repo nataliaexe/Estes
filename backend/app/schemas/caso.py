@@ -1,5 +1,6 @@
 from datetime import datetime
 from uuid import UUID
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -17,8 +18,6 @@ class CasoResumo(BaseModel):
     solucao: str
     evidencia: str
 
-    model_config = {"from_attributes": True}
-
 
 class CasoDetalhe(CasoResumo):
     historia: str
@@ -32,6 +31,7 @@ class CasoDetalhe(CasoResumo):
     nivel_1_pronto: dict
     nivel_2_simples: dict
     nivel_3_completo: dict
+    passos_visuais: list = Field(default_factory=list)
     criado_em: datetime
     atualizado_em: datetime
 

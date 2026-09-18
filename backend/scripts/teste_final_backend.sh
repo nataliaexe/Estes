@@ -61,21 +61,7 @@ for r in d:
 "
 
 echo ""
-echo "=== 7. IA PERGUNTAR (casca de cafe) ==="
-time curl -s -X POST $API/ia/perguntar \
-  -H "Content-Type: application/json" \
-  -d '{"pergunta": "tenho casca de cafe e o rio ta contaminado"}' \
-  | python3 -c "
-import sys,json
-d = json.load(sys.stdin)
-print(f\"  Provedor: {d['provedor']}\")
-print(f\"  Intencao: {d['intencao']}\")
-print(f\"  Motor cientifico: {d.get('usou_motor_cientifico', False)}\")
-print(f\"  Fontes: {len(d['fontes'])}\")
-"
-
-echo ""
-echo "=== 8. CLIMA (Ouro Preto) ==="
+echo "=== 7. CLIMA (Ouro Preto) ==="
 curl -s "$API/clima?lat=-20.3856&lon=-43.5035" | python3 -c "
 import sys,json
 d = json.load(sys.stdin)
@@ -84,7 +70,7 @@ print(f\"  Risco queimada: {d['risco_queimada']}\")
 "
 
 echo ""
-echo "=== 9. QUEIMADAS (Pantanal) ==="
+echo "=== 8. QUEIMADAS (Pantanal) ==="
 curl -s "$API/queimadas?lat=-17.5&lon=-56.5&raio_km=200&dias=1" | python3 -c "
 import sys,json
 d = json.load(sys.stdin)
@@ -92,7 +78,7 @@ print(f\"  Total focos: {d['total']}\")
 "
 
 echo ""
-echo "=== 10. PREDICAO ==="
+echo "=== 9. PREDICAO ==="
 curl -s "$API/predicao?lat=-17.5&lon=-56.5&uf=MT" | python3 -c "
 import sys,json
 d = json.load(sys.stdin)
@@ -103,7 +89,7 @@ for r in d['riscos']:
 "
 
 echo ""
-echo "=== 11. CONTRIBUICOES ==="
+echo "=== 10. CONTRIBUICOES ==="
 curl -s "$API/contribuicoes?status=validado" | python3 -c "
 import sys,json
 d = json.load(sys.stdin)
@@ -111,17 +97,16 @@ print(f\"  Total validadas: {len(d)}\")
 "
 
 echo ""
-echo "=== 12. EXPORTACAO CSV ==="
+echo "=== 11. EXPORTACAO CSV ==="
 curl -s $API/exportar/casos.csv | head -2
 
 echo ""
-echo "=== 13. ACESSIBILIDADE ==="
+echo "=== 12. ACESSIBILIDADE ==="
 curl -s $API/acessibilidade/config | python3 -c "
 import sys,json
 d = json.load(sys.stdin)
 print(f\"  Modos: {len(d['modos'])}\")
 print(f\"  Idiomas de voz: {d['idiomas_voz']}\")
-print(f\"  Recursos: {d['recursos']}\")
 "
 
 echo ""

@@ -1,11 +1,40 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Inter, DM_Sans } from "next/font/google";
+import { Toaster } from "sonner";
+import { Navbar } from "./componentes/layout/navbar";
+import { AuthProvider } from "./contextos/AuthContext";
+import { Footer } from "./componentes/layout/footer";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  weight: ["400", "500", "700", "800", "900"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Estes — Plataforma de Cidadania Ambiental",
+  title: {
+    default: "Estes — Soluções que nascem da raiz",
+    template: "%s · Estes",
+  },
   description:
-    "Transforma recursos locais em soluções ambientais e garante direitos por meio de evidência científica.",
+    "Plataforma de cidadania ambiental que transforma resíduos locais em soluções urgentes e garante direitos humanos por meio de evidência científica aberta.",
+  keywords: [
+    "ambiente",
+    "sustentabilidade",
+    "indígenas",
+    "direitos humanos",
+    "ciência aberta",
+    "Brasil",
+  ],
+  authors: [{ name: "Natalia" }],
 };
 
 export default function RootLayout({
@@ -14,33 +43,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
-      <body>
-        <nav className="bg-verde-900 text-white shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl font-bold tracking-tight">Estes</span>
-              <span className="text-xs text-verde-100 hidden sm:inline">
-                cidadania ambiental
-              </span>
-            </Link>
-            <div className="flex gap-4 text-sm">
-              <Link href="/" className="hover:text-verde-100">
-                Mapa
-              </Link>
-              <Link href="/atlas" className="hover:text-verde-100">
-                Atlas
-              </Link>
-              <Link href="/chat" className="hover:text-verde-100">
-                Assistente
-              </Link>
-              <Link href="/medir" className="hover:text-verde-100">
-                Medir
-              </Link>
-            </div>
-          </div>
-        </nav>
-        <main>{children}</main>
+    <html lang="pt-BR" className={`${inter.variable} ${dmSans.variable}`}>
+      <body className="min-h-screen flex flex-col">
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </AuthProvider>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: "#114224",
+              color: "#EAE5D8",
+              border: "1px solid rgba(166, 138, 66, 0.3)",
+            },
+          }}
+        />
       </body>
     </html>
   );

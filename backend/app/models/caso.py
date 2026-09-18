@@ -18,7 +18,7 @@ class Caso(Base):
         PGUUID(as_uuid=True), primary_key=True, default=uuid4
     )
     numero: Mapped[int] = mapped_column(Integer, unique=True, index=True)
-    titulo: Mapped[str] = mapped_column(String(200), nullable=False)
+    titulo: Mapped[dict] = mapped_column(JSONB, nullable=False)
     uf: Mapped[str] = mapped_column(String(2), index=True)
 
     # Categorizacao
@@ -31,14 +31,14 @@ class Caso(Base):
     precisa_hardware: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Historia (gancho emocional)
-    historia: Mapped[str] = mapped_column(Text, default="")
+    historia: Mapped[dict] = mapped_column(JSONB, default=dict)
     fontes_historicas: Mapped[list] = mapped_column(JSONB, default=list)
     impacto_estimado: Mapped[dict] = mapped_column(JSONB, default=dict)
 
     # Conteudo tecnico
-    problema: Mapped[str] = mapped_column(Text, nullable=False)
-    recurso_local: Mapped[str] = mapped_column(String(200), nullable=False)
-    solucao: Mapped[str] = mapped_column(String(200), nullable=False)
+    problema: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    recurso_local: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    solucao: Mapped[dict] = mapped_column(JSONB, nullable=False)
     evidencia: Mapped[str] = mapped_column(String(20), default="hipotese")
 
     composicao: Mapped[dict] = mapped_column(JSONB, default=dict)

@@ -10,6 +10,7 @@ from app.core.logging import configurar_logging, get_logger
 from app.core.scheduler import iniciar_scheduler, parar_scheduler
 from app.routers import (
     acessibilidade,
+    achievements,
     auth,
     casos,
     clima,
@@ -23,8 +24,11 @@ from app.routers import (
     imagens,
     ia,
     ia_health,
+    ia_imagens,
+    ia_vision,
     ia_stream,
     mapa,
+    memoria,
     noticias,
     noticias_stream,
     predicao,
@@ -82,6 +86,7 @@ PREFIX = settings.api_v1_prefix
 app.include_router(auth.router, prefix=PREFIX)
 app.include_router(casos.router, prefix=PREFIX)
 app.include_router(acessibilidade.router, prefix=PREFIX)
+app.include_router(achievements.router, prefix=PREFIX)
 app.include_router(clima.router, prefix=PREFIX)
 app.include_router(queimadas.router, prefix=PREFIX)
 app.include_router(predicao.router, prefix=PREFIX)
@@ -91,6 +96,7 @@ app.include_router(noticias.router, prefix=PREFIX)
 app.include_router(documentos.router, prefix=PREFIX)
 app.include_router(dashboard.router, prefix=PREFIX)
 app.include_router(mapa.router, prefix=PREFIX)
+app.include_router(memoria.router, prefix=PREFIX)
 app.include_router(exportar.router, prefix=PREFIX)
 app.include_router(explorar.router, prefix=PREFIX)
 app.include_router(health.router, prefix=PREFIX)
@@ -98,9 +104,11 @@ app.include_router(imagens.router, prefix=PREFIX)
 
 # IA (ordem importa: stream antes do router principal)
 app.include_router(ia_stream.router, prefix=PREFIX)
+app.include_router(ia_imagens.router, prefix=PREFIX)
 app.include_router(contribuicoes.router, prefix=PREFIX)
 app.include_router(ia.router, prefix=PREFIX)
 app.include_router(ia_health.router, prefix=PREFIX)
+app.include_router(ia_vision.router, prefix=PREFIX)
 
 
 @app.get("/")

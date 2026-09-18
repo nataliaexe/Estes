@@ -1,5 +1,6 @@
 from app.models.caso import Caso
 from app.models.contribuicao import Comentario, Contribuicao, Voto
+from app.models.conversa import Conversa, ItemBiblioteca
 from app.models.documento import Documento
 from app.models.evidencia import Evidencia
 from app.models.medicao import Medicao
@@ -11,6 +12,8 @@ __all__ = [
     "Caso",
     "Comentario",
     "Contribuicao",
+    "Conversa",
+    "ItemBiblioteca",
     "Documento",
     "Evidencia",
     "Medicao",
