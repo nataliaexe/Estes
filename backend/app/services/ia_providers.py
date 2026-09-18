@@ -1,5 +1,6 @@
 """Provedores de LLM em cascata: Groq -> Gemini -> Ollama."""
 
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 
 import httpx
@@ -220,3 +221,79 @@ async def completar_cascata(
     raise ProvedorIndisponivel(
         f"Todos os provedores falharam: {'; '.join(erros)}"
     )
+
+
+# ============================================================
+# STREAMING
+# ============================================================
+async def completar_stream(
+    mensagens: list[dict],
+    temperatura: float = 0.3,
+    max_tokens: int = 2048,
+) -> AsyncGenerator[str, None]:
+    """Streaming palavra por palavra via Groq.
+
+    Se Groq nao tiver disponivel, cai pra cascata completa
+    (resposta em um unico chunk).
+    """
+    if not settings.groq_api_key:
+        try:
+            r = await completar_cascata(mensagens, temperatura, max_tokens)
+            yield r.texto
+        except ProvedorIndisponivel as e:
+            raise e
+        return
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {settings.groq_api_key}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "model": settings.groq_model,
+        "messages": mensagens,
+        "temperature": temperatura,
+        "max_tokens": max_tokens,
+        "stream": True,
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            async with client.stream(
+                "POST", url, headers=headers, json=payload
+            ) as r:
+                if r.status_code != 200:
+                    texto = await r.aread()
+                    log.warning(
+                        "groq_stream_erro",
+                        status=r.status_code,
+                        body=texto[:200],
+                    )
+                    raise ProvedorIndisponivel(
+                        f"Groq stream {r.status_code}"
+                    )
+
+                async for linha in r.aiter_lines():
+                    if not linha or not linha.startswith("data: "):
+                        continue
+                    dados = linha[6:]
+                    if dados == "[DONE]":
+                        break
+                    try:
+                        import json
+
+                        obj = json.loads(dados)
+                        delta = (
+                            obj["choices"][0]
+                            .get("delta", {})
+                            .get("content", "")
+                        )
+                        if delta:
+                            yield delta
+                    except Exception:
+                        continue
+
+    except (httpx.HTTPError, ProvedorIndisponivel) as e:
+        log.warning("groq_stream_falhou_fallback", erro=str(e)[:150])
+        r = await completar_cascata(mensagens, temperatura, max_tokens)
+        yield r.texto

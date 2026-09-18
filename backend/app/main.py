@@ -7,15 +7,19 @@ from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.core.logging import configurar_logging, get_logger
+from app.core.scheduler import iniciar_scheduler, parar_scheduler
 from app.routers import (
     auth,
     casos,
     clima,
     dashboard,
     documentos,
+    exportar,
     hardware,
     health,
     ia,
+    ia_stream,
+    mapa,
     noticias,
     queimadas,
 )
@@ -35,13 +39,15 @@ async def lifespan(app: FastAPI):
         tavily=bool(settings.tavily_api_key),
         firms=bool(settings.firms_api_key),
     )
+    iniciar_scheduler()
     yield
+    parar_scheduler()
     log.info("estes_encerrando")
 
 
 app = FastAPI(
     title=settings.app_name,
-    version="0.3.0",
+    version="0.4.0",
     description=(
         "Plataforma de cidadania ambiental. "
         "Transforma recursos locais em solucoes ambientais "
@@ -64,6 +70,8 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 PREFIX = settings.api_v1_prefix
+
+# Routers
 app.include_router(auth.router, prefix=PREFIX)
 app.include_router(casos.router, prefix=PREFIX)
 app.include_router(clima.router, prefix=PREFIX)
@@ -72,13 +80,18 @@ app.include_router(hardware.router, prefix=PREFIX)
 app.include_router(noticias.router, prefix=PREFIX)
 app.include_router(documentos.router, prefix=PREFIX)
 app.include_router(dashboard.router, prefix=PREFIX)
+app.include_router(mapa.router, prefix=PREFIX)
+app.include_router(exportar.router, prefix=PREFIX)
 app.include_router(health.router, prefix=PREFIX)
+
+# IA (ordem importa: stream antes do router principal)
+app.include_router(ia_stream.router, prefix=PREFIX)
 app.include_router(ia.router, prefix=PREFIX)
 
 
 @app.get("/")
 async def raiz():
-    return {"nome": settings.app_name, "versao": "0.3.0", "docs": "/docs"}
+    return {"nome": settings.app_name, "versao": "0.4.0", "docs": "/docs"}
 
 
 @app.get("/health")
