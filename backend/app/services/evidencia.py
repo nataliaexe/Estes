@@ -4,8 +4,9 @@ import json
 import re
 from dataclasses import dataclass, field
 
+from app.core.config import settings
 from app.core.logging import get_logger
-from app.services.ciencia import Paper
+from app.services.ciencia import Paper, atualizar_evidencia_paper
 from app.services.ia_providers import ProvedorIndisponivel, completar_cascata
 
 log = get_logger(__name__)
@@ -184,8 +185,7 @@ Abstract: {paper.abstract[:1500]}
 """
 
     try:
-        from app.core.config import settings
-
+        # Skip Ollama na extracao
         resposta = await completar_cascata(
             [
                 {"role": "system", "content": PROMPT_EXTRACAO},
@@ -306,7 +306,7 @@ async def extrair_evidencias(
         try:
             # Delay para evitar rate limit (Groq free tier)
             import asyncio
-            await asyncio.sleep(1.0)
+            await asyncio.sleep(5.0)
             ev = await extrair_evidencia(paper, material, problema)
             if ev:
                 resultado.evidencias.append(ev)
@@ -316,5 +316,72 @@ async def extrair_evidencias(
             log.warning("extracao_falhou", erro=str(e)[:150])
             resultado.erros += 1
 
+    resultado.evidencias.sort(key=lambda e: e.forca, reverse=True)
+    return resultado
+
+
+async def extrair_e_cachear(
+    papers: list[Paper],
+    material: str,
+    problema: str,
+    max_papers: int = 8,
+) -> ExtracaoResultado:
+    """Extrai evidencias E salva de volta no cache de papers."""
+    resultado = ExtracaoResultado(total_artigos=len(papers))
+
+    # Separa os que ja tem evidencia (cache) dos que precisam extrair
+    com_evidencia = [p for p in papers if p.evidence]
+    sem_evidencia = [p for p in papers if not p.evidence and p.abstract and len(p.abstract) >= 80]
+    sem_abstract = [p for p in papers if not p.evidence and (not p.abstract or len(p.abstract) < 80)]
+
+    # Reconstroi evidencias do cache
+    for p in com_evidencia:
+        if p.evidence:
+            try:
+                resultado.evidencias.append(Evidencia(
+                    claim=p.evidence.get("claim", ""),
+                    source=f"{p.titulo} ({p.ano or 's/d'})",
+                    doi=p.doi,
+                    url=p.url,
+                    trecho=p.evidence.get("trecho", ""),
+                    tipo=p.evidence.get("tipo", "observacao"),
+                    limitacoes=p.evidence.get("limitacoes", ""),
+                    aplicabilidade=p.evidence.get("aplicabilidade", ""),
+                    nivel=p.evidence.get("nivel", "hipotese"),
+                    forca=float(p.evidence.get("forca", 0.5)),
+                ))
+            except Exception as e:
+                log.warning("evidencia_cache_falhou", erro=str(e)[:100])
+
+    # Extrai dos que faltam
+    para_extrair = sem_evidencia[:max_papers]
+    for i, p in enumerate(para_extrair):
+        log.info("extraindo_e_cacheando", indice=i+1, total=len(para_extrair),
+                 titulo=p.titulo[:50])
+        try:
+            import asyncio
+            await asyncio.sleep(5.0)
+            ev = await extrair_evidencia(p, material, problema)
+            if ev:
+                resultado.evidencias.append(ev)
+                # Salva de volta no cache
+                if p.paper_id:
+                    await atualizar_evidencia_paper(p.paper_id, {
+                        "aplicavel": True,
+                        "claim": ev.claim,
+                        "trecho": ev.trecho,
+                        "tipo": ev.tipo,
+                        "limitacoes": ev.limitacoes,
+                        "aplicabilidade": ev.aplicabilidade,
+                        "nivel": ev.nivel,
+                        "forca": ev.forca,
+                    })
+            else:
+                resultado.nao_aplicaveis += 1
+        except Exception as e:
+            log.warning("extracao_falhou", erro=str(e)[:150])
+            resultado.erros += 1
+
+    resultado.sem_abstract = len(sem_abstract)
     resultado.evidencias.sort(key=lambda e: e.forca, reverse=True)
     return resultado

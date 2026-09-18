@@ -9,9 +9,11 @@ from app.core.config import settings
 from app.core.logging import configurar_logging, get_logger
 from app.core.scheduler import iniciar_scheduler, parar_scheduler
 from app.routers import (
+    acessibilidade,
     auth,
     casos,
     clima,
+    contribuicoes,
     dashboard,
     documentos,
     explorar,
@@ -20,6 +22,7 @@ from app.routers import (
     health,
     imagens,
     ia,
+    ia_health,
     ia_stream,
     mapa,
     noticias,
@@ -78,6 +81,7 @@ PREFIX = settings.api_v1_prefix
 # Routers
 app.include_router(auth.router, prefix=PREFIX)
 app.include_router(casos.router, prefix=PREFIX)
+app.include_router(acessibilidade.router, prefix=PREFIX)
 app.include_router(clima.router, prefix=PREFIX)
 app.include_router(queimadas.router, prefix=PREFIX)
 app.include_router(predicao.router, prefix=PREFIX)
@@ -94,7 +98,9 @@ app.include_router(imagens.router, prefix=PREFIX)
 
 # IA (ordem importa: stream antes do router principal)
 app.include_router(ia_stream.router, prefix=PREFIX)
+app.include_router(contribuicoes.router, prefix=PREFIX)
 app.include_router(ia.router, prefix=PREFIX)
+app.include_router(ia_health.router, prefix=PREFIX)
 
 
 @app.get("/")

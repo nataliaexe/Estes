@@ -14,8 +14,9 @@ from app.schemas.explorar import (
     ExplorarResposta,
 )
 from app.services.ciencia import buscar_cientifico
-from app.services.evidencia import extrair_evidencias
+from app.services.evidencia import extrair_e_cachear
 from app.services.ia_providers import ProvedorIndisponivel, completar_cascata
+from app.services.ia_providers import gemini_completar, groq_completar
 
 log = get_logger(__name__)
 router = APIRouter(prefix="/explorar", tags=["explorar"])
@@ -125,7 +126,7 @@ async def explorar(request: Request, body: ExplorarRequest):
             aviso="Busca sem resultados. Ajuste os termos.",
         )
 
-    extracao = await extrair_evidencias(
+    extracao = await extrair_e_cachear(
         papers, body.material, body.problema, max_papers=8
     )
 
@@ -156,14 +157,21 @@ EVIDENCIAS:
 """
 
         try:
-            resposta = await completar_cascata(
-                [
-                    {"role": "system", "content": PROMPT_CAMINHOS},
-                    {"role": "user", "content": contexto},
-                ],
-                temperatura=0.2,
-                max_tokens=1500,
-            )
+            # Nao usa Ollama nos caminhos (JSON rigoroso)
+            mensagens = [
+                {"role": "system", "content": PROMPT_CAMINHOS},
+                {"role": "user", "content": contexto},
+            ]
+            resposta = None
+            for fn in [groq_completar, gemini_completar]:
+                try:
+                    resposta = await fn(mensagens, temperatura=0.2, max_tokens=1500)
+                    break
+                except Exception:
+                    continue
+
+            if not resposta:
+                raise ProvedorIndisponivel("groq+gemini falharam")
             dados = _extrair_json(resposta.texto)
             if dados:
                 caminhos = dados.get("caminhos", [])

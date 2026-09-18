@@ -1,18 +1,20 @@
 """Provedores de LLM em cascata: Groq -> Gemini -> Ollama."""
 
+import time
 from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 
 import httpx
 
+from app.core.circuit_breaker import circuit_breaker
 from app.core.config import settings
 from app.core.logging import get_logger
 
 log = get_logger(__name__)
 
 TIMEOUT_GROQ = 30.0
-TIMEOUT_GEMINI = 30.0
-TIMEOUT_OLLAMA = 180.0
+TIMEOUT_GEMINI = 60.0
+TIMEOUT_OLLAMA = 90.0
 
 
 class ProvedorIndisponivel(Exception):
@@ -38,6 +40,9 @@ async def groq_completar(
     if not settings.groq_api_key:
         raise ProvedorIndisponivel("GROQ_API_KEY nao configurada")
 
+    if not circuit_breaker.esta_disponivel("groq"):
+        raise ProvedorIndisponivel("Groq bloqueado (circuit breaker)")
+
     url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {settings.groq_api_key}",
@@ -52,26 +57,41 @@ async def groq_completar(
         "max_tokens": max_tokens,
     }
 
-    async with httpx.AsyncClient(timeout=TIMEOUT_GROQ) as client:
-        r = await client.post(url, headers=headers, json=payload)
-        if r.status_code != 200:
-            raise ProvedorIndisponivel(
-                f"Groq {r.status_code}: {r.text[:200]}"
-            )
-        data = r.json()
+    try:
+        async with httpx.AsyncClient(timeout=TIMEOUT_GROQ) as client:
+            r = await client.post(url, headers=headers, json=payload)
+
+            if r.status_code == 429:
+                circuit_breaker.registrar_falha("groq")
+                raise ProvedorIndisponivel(f"Groq 429 rate limit")
+
+            if r.status_code != 200:
+                circuit_breaker.registrar_falha("groq")
+                raise ProvedorIndisponivel(f"Groq {r.status_code}")
+
+            data = r.json()
+            circuito_ok = True
+
+    except httpx.HTTPError as e:
+        circuit_breaker.registrar_falha("groq")
+        raise ProvedorIndisponivel(f"Groq rede: {e}")
 
     try:
         texto = data["choices"][0]["message"]["content"]
     except (KeyError, IndexError) as e:
+        circuit_breaker.registrar_falha("groq")
         raise ProvedorIndisponivel(f"Groq resposta invalida: {e}")
 
     if not texto or not texto.strip():
+        circuit_breaker.registrar_falha("groq")
         raise ProvedorIndisponivel("Groq retornou vazio")
+
+    circuit_breaker.registrar_sucesso("groq")
 
     return RespostaIA(
         texto=texto.strip(),
         provedor="groq",
-        modelo=settings.groq_model,
+        modelo=modelo,
     )
 
 
@@ -86,6 +106,9 @@ async def gemini_completar(
     if not settings.gemini_api_key:
         raise ProvedorIndisponivel("GEMINI_API_KEY nao configurada")
 
+    if not circuit_breaker.esta_disponivel("gemini"):
+        raise ProvedorIndisponivel("Gemini bloqueado (circuit breaker)")
+
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/"
         f"{settings.gemini_model}:generateContent"
@@ -99,9 +122,7 @@ async def gemini_completar(
             system_instruction = {"parts": [{"text": m["content"]}]}
         else:
             role = "user" if m["role"] == "user" else "model"
-            contents.append(
-                {"role": role, "parts": [{"text": m["content"]}]}
-            )
+            contents.append({"role": role, "parts": [{"text": m["content"]}]})
 
     payload = {
         "contents": contents,
@@ -113,21 +134,35 @@ async def gemini_completar(
     if system_instruction:
         payload["systemInstruction"] = system_instruction
 
-    async with httpx.AsyncClient(timeout=TIMEOUT_GEMINI) as client:
-        r = await client.post(url, json=payload)
-        if r.status_code != 200:
-            raise ProvedorIndisponivel(
-                f"Gemini {r.status_code}: {r.text[:200]}"
-            )
-        data = r.json()
+    try:
+        async with httpx.AsyncClient(timeout=TIMEOUT_GEMINI) as client:
+            r = await client.post(url, json=payload)
+
+            if r.status_code == 429:
+                circuit_breaker.registrar_falha("gemini")
+                raise ProvedorIndisponivel("Gemini 429 rate limit")
+
+            if r.status_code != 200:
+                circuit_breaker.registrar_falha("gemini")
+                raise ProvedorIndisponivel(f"Gemini {r.status_code}")
+
+            data = r.json()
+
+    except httpx.HTTPError as e:
+        circuit_breaker.registrar_falha("gemini")
+        raise ProvedorIndisponivel(f"Gemini rede: {e}")
 
     try:
         texto = data["candidates"][0]["content"]["parts"][0]["text"]
     except (KeyError, IndexError) as e:
+        circuit_breaker.registrar_falha("gemini")
         raise ProvedorIndisponivel(f"Gemini resposta invalida: {e}")
 
     if not texto or not texto.strip():
+        circuit_breaker.registrar_falha("gemini")
         raise ProvedorIndisponivel("Gemini retornou vazio")
+
+    circuit_breaker.registrar_sucesso("gemini")
 
     return RespostaIA(
         texto=texto.strip(),
@@ -144,6 +179,9 @@ async def ollama_completar(
     temperatura: float = 0.3,
     max_tokens: int = 2048,
 ) -> RespostaIA:
+    if not circuit_breaker.esta_disponivel("ollama"):
+        raise ProvedorIndisponivel("Ollama bloqueado (circuit breaker)")
+
     url = f"{settings.ollama_host}/api/chat"
     payload = {
         "model": settings.ollama_model,
@@ -155,23 +193,30 @@ async def ollama_completar(
         },
     }
 
-    async with httpx.AsyncClient(timeout=TIMEOUT_OLLAMA) as client:
-        r = await client.post(url, json=payload)
-        if r.status_code != 200:
-            raise ProvedorIndisponivel(f"Ollama {r.status_code}")
-        data = r.json()
+    try:
+        async with httpx.AsyncClient(timeout=TIMEOUT_OLLAMA) as client:
+            r = await client.post(url, json=payload)
+            if r.status_code != 200:
+                circuit_breaker.registrar_falha("ollama")
+                raise ProvedorIndisponivel(f"Ollama {r.status_code}")
+            data = r.json()
+    except httpx.HTTPError as e:
+        circuit_breaker.registrar_falha("ollama")
+        raise ProvedorIndisponivel(f"Ollama rede: {e}")
 
     texto = data.get("message", {}).get("content", "").strip()
 
-    # deepseek-r1 as vezes retorna vazio - tenta pegar do thinking
     if not texto:
         thinking = data.get("message", {}).get("thinking", "")
         if thinking:
-            linhas = [l for l in thinking.split("\n") if l.strip()]
+            linhas = [ln for ln in thinking.split("\n") if ln.strip()]
             texto = linhas[-1] if linhas else ""
 
     if not texto:
-        raise ProvedorIndisponivel("Ollama retornou resposta vazia")
+        circuit_breaker.registrar_falha("ollama")
+        raise ProvedorIndisponivel("Ollama retornou vazio")
+
+    circuit_breaker.registrar_sucesso("ollama")
 
     return RespostaIA(
         texto=texto,
@@ -188,17 +233,30 @@ async def completar_cascata(
     temperatura: float = 0.3,
     max_tokens: int = 2048,
     groq_model_override: str | None = None,
+    permitir_ollama: bool = True,
 ) -> RespostaIA:
-    """Tenta Groq -> Gemini -> Ollama em ordem."""
+    """Tenta Groq -> Gemini -> Ollama.
+
+    Args:
+        permitir_ollama: se False, nao usa Ollama (bom pra extracao JSON)
+    """
     erros = []
 
     provedores = [
-        ("groq", lambda m, **kw: groq_completar(m, model_override=groq_model_override, **kw)),
+        ("groq", lambda m, **kw: groq_completar(
+            m, model_override=groq_model_override, **kw
+        )),
         ("gemini", gemini_completar),
-        ("ollama", ollama_completar),
     ]
 
+    if permitir_ollama:
+        provedores.append(("ollama", ollama_completar))
+
     for nome, fn in provedores:
+        if not circuit_breaker.esta_disponivel(nome):
+            log.info("ia_pulando", provedor=nome, motivo="circuit_breaker")
+            continue
+
         try:
             log.info("ia_tentando", provedor=nome)
             resposta = await fn(
@@ -214,11 +272,7 @@ async def completar_cascata(
             return resposta
         except Exception as e:
             erro_msg = str(e)[:150]
-            log.warning(
-                "ia_falhou",
-                provedor=nome,
-                erro=erro_msg,
-            )
+            log.warning("ia_falhou", provedor=nome, erro=erro_msg)
             erros.append(f"{nome}: {erro_msg}")
             continue
 
@@ -235,17 +289,13 @@ async def completar_stream(
     temperatura: float = 0.3,
     max_tokens: int = 2048,
 ) -> AsyncGenerator[str, None]:
-    """Streaming palavra por palavra via Groq.
-
-    Se Groq nao tiver disponivel, cai pra cascata completa
-    (resposta em um unico chunk).
-    """
-    if not settings.groq_api_key:
-        try:
-            r = await completar_cascata(mensagens, temperatura, max_tokens)
-            yield r.texto
-        except ProvedorIndisponivel as e:
-            raise e
+    """Streaming via Groq. Fallback: resposta completa."""
+    if (
+        not settings.groq_api_key
+        or not circuit_breaker.esta_disponivel("groq")
+    ):
+        r = await completar_cascata(mensagens, temperatura, max_tokens)
+        yield r.texto
         return
 
     url = "https://api.groq.com/openai/v1/chat/completions"
@@ -267,15 +317,8 @@ async def completar_stream(
                 "POST", url, headers=headers, json=payload
             ) as r:
                 if r.status_code != 200:
-                    texto = await r.aread()
-                    log.warning(
-                        "groq_stream_erro",
-                        status=r.status_code,
-                        body=texto[:200],
-                    )
-                    raise ProvedorIndisponivel(
-                        f"Groq stream {r.status_code}"
-                    )
+                    circuit_breaker.registrar_falha("groq")
+                    raise ProvedorIndisponivel(f"Groq stream {r.status_code}")
 
                 async for linha in r.aiter_lines():
                     if not linha or not linha.startswith("data: "):
@@ -283,21 +326,20 @@ async def completar_stream(
                     dados = linha[6:]
                     if dados == "[DONE]":
                         break
+                    import json
                     try:
-                        import json
-
                         obj = json.loads(dados)
                         delta = (
-                            obj["choices"][0]
-                            .get("delta", {})
-                            .get("content", "")
+                            obj["choices"][0].get("delta", {}).get("content", "")
                         )
                         if delta:
                             yield delta
                     except Exception:
                         continue
 
-    except (httpx.HTTPError, ProvedorIndisponivel) as e:
-        log.warning("groq_stream_falhou_fallback", erro=str(e)[:150])
+                circuit_breaker.registrar_sucesso("groq")
+
+    except Exception as e:
+        log.warning("groq_stream_falhou", erro=str(e)[:150])
         r = await completar_cascata(mensagens, temperatura, max_tokens)
         yield r.texto
