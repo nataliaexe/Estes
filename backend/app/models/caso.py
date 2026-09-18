@@ -51,6 +51,9 @@ class Caso(Base):
     nivel_2_simples: Mapped[dict] = mapped_column(JSONB, default=dict)
     nivel_3_completo: Mapped[dict] = mapped_column(JSONB, default=dict)
 
+    # Passos com fotos (lista de {nivel, passo, descricao, foto_url, duracao, alerta})
+    passos_visuais: Mapped[list] = mapped_column(JSONB, default=list)
+
     embedding: Mapped[list[float] | None] = mapped_column(
         Vector(settings.embedding_dim), nullable=True
     )

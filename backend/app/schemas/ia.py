@@ -31,6 +31,7 @@ class RespostaIAOut(BaseModel):
     fontes: list[FonteIA]
     ferramentas_usadas: list[str]
     sugestoes: list[str]
+    usou_motor_cientifico: bool = False
 
 
 class StatusIA(BaseModel):

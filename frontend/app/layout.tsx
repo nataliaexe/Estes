@@ -34,6 +34,9 @@ export default function RootLayout({
               <Link href="/chat" className="hover:text-verde-100">
                 Assistente
               </Link>
+              <Link href="/medir" className="hover:text-verde-100">
+                Medir
+              </Link>
             </div>
           </div>
         </nav>

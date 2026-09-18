@@ -14,13 +14,17 @@ from app.routers import (
     clima,
     dashboard,
     documentos,
+    explorar,
     exportar,
     hardware,
     health,
+    imagens,
     ia,
     ia_stream,
     mapa,
     noticias,
+    noticias_stream,
+    predicao,
     queimadas,
 )
 
@@ -39,7 +43,7 @@ async def lifespan(app: FastAPI):
         tavily=bool(settings.tavily_api_key),
         firms=bool(settings.firms_api_key),
     )
-    iniciar_scheduler()
+    # iniciar_scheduler()  # desativado em dev
     yield
     parar_scheduler()
     log.info("estes_encerrando")
@@ -76,13 +80,17 @@ app.include_router(auth.router, prefix=PREFIX)
 app.include_router(casos.router, prefix=PREFIX)
 app.include_router(clima.router, prefix=PREFIX)
 app.include_router(queimadas.router, prefix=PREFIX)
+app.include_router(predicao.router, prefix=PREFIX)
+app.include_router(noticias_stream.router, prefix=PREFIX)
 app.include_router(hardware.router, prefix=PREFIX)
 app.include_router(noticias.router, prefix=PREFIX)
 app.include_router(documentos.router, prefix=PREFIX)
 app.include_router(dashboard.router, prefix=PREFIX)
 app.include_router(mapa.router, prefix=PREFIX)
 app.include_router(exportar.router, prefix=PREFIX)
+app.include_router(explorar.router, prefix=PREFIX)
 app.include_router(health.router, prefix=PREFIX)
+app.include_router(imagens.router, prefix=PREFIX)
 
 # IA (ordem importa: stream antes do router principal)
 app.include_router(ia_stream.router, prefix=PREFIX)

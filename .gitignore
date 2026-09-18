@@ -7,6 +7,9 @@ __pycache__/
 venv/
 env/
 *.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
 
 # Node
 node_modules/
@@ -16,6 +19,7 @@ dist/
 build/
 *.log
 npm-debug.log*
+pnpm-debug.log*
 
 # Env
 .env
@@ -36,7 +40,8 @@ Thumbs.db
 *.db
 *.sqlite3
 
+# Docker
+docker-compose.override.yml
+
 # Cache
-.pytest_cache/
-.ruff_cache/
-.mypy_cache/
+.cache/

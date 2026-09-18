@@ -159,6 +159,43 @@ export default async function CasoPage({
           </div>
         </section>
 
+
+        {caso.passos_visuais && caso.passos_visuais.length > 0 && (
+          <section className="bg-white rounded-xl p-6 shadow mb-6">
+            <h2 className="text-xl font-bold text-verde-900 mb-4">
+              Passo a passo visual
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {caso.passos_visuais.slice(0, 12).map((p: any, i: number) => (
+                <div key={i} className="border rounded-lg overflow-hidden">
+                  {p.foto_url && (
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "")}${p.foto_url}`}
+                      alt={p.descricao}
+                      className="w-full h-32 object-cover bg-gray-100"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  )}
+                  <div className="p-2">
+                    <p className="text-xs font-bold text-verde-900">
+                      Passo {p.passo}
+                    </p>
+                    <p className="text-xs text-gray-700">{p.descricao}</p>
+                    {p.duracao && (
+                      <p className="text-xs text-gray-400 mt-1">{p.duracao}</p>
+                    )}
+                    {p.alerta && (
+                      <p className="text-xs text-red-600 mt-1">⚠ {p.alerta}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {caso.lacunas?.length > 0 && (
           <section className="bg-amber-50 border-l-4 border-amber-500 rounded-r-xl p-4 mb-6">
             <p className="text-sm font-semibold text-amber-900 mb-1">

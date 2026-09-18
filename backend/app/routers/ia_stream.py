@@ -14,8 +14,8 @@ from app.core.logging import get_logger
 from app.schemas.ia import PerguntaIA
 from app.services.ia_agent import (
     ContextoAgente,
-    _formatar_contexto_plataforma,
-    _formatar_contexto_web,
+    _fmt_plataforma,
+    _fmt_web,
     classificar_intencao,
 )
 from app.services.busca_plataforma import buscar_plataforma
@@ -60,7 +60,7 @@ async def stream(
                     if resultados:
                         ferramentas.append("busca_plataforma")
                         contexto_extra.append(
-                            _formatar_contexto_plataforma(resultados)
+                            _fmt_plataforma(resultados)
                         )
                         for r in resultados:
                             fontes.append(
@@ -81,7 +81,7 @@ async def stream(
                     resultados = await buscar_web(consulta, max_resultados=4)
                     if resultados:
                         ferramentas.append("busca_web")
-                        contexto_extra.append(_formatar_contexto_web(resultados))
+                        contexto_extra.append(_fmt_web(resultados))
                         for r in resultados:
                             fontes.append(
                                 {"tipo": "web", "titulo": r.titulo, "url": r.url}

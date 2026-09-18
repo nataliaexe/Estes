@@ -50,7 +50,7 @@ def iniciar_scheduler() -> AsyncIOScheduler:
         id="coleta_noticias",
         max_instances=1,
         coalesce=True,
-        next_run_time=datetime.now(UTC),
+        # next_run_time=datetime.now(UTC),  # roda so no intervalo
     )
     _scheduler.start()
     log.info("scheduler_iniciado", interval="30 min")

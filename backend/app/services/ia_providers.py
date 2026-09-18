@@ -33,6 +33,7 @@ async def groq_completar(
     mensagens: list[dict],
     temperatura: float = 0.3,
     max_tokens: int = 2048,
+    model_override: str | None = None,
 ) -> RespostaIA:
     if not settings.groq_api_key:
         raise ProvedorIndisponivel("GROQ_API_KEY nao configurada")
@@ -42,8 +43,10 @@ async def groq_completar(
         "Authorization": f"Bearer {settings.groq_api_key}",
         "Content-Type": "application/json",
     }
+    modelo = model_override or settings.groq_model
+
     payload = {
-        "model": settings.groq_model,
+        "model": modelo,
         "messages": mensagens,
         "temperature": temperatura,
         "max_tokens": max_tokens,
@@ -184,12 +187,13 @@ async def completar_cascata(
     mensagens: list[dict],
     temperatura: float = 0.3,
     max_tokens: int = 2048,
+    groq_model_override: str | None = None,
 ) -> RespostaIA:
     """Tenta Groq -> Gemini -> Ollama em ordem."""
     erros = []
 
     provedores = [
-        ("groq", groq_completar),
+        ("groq", lambda m, **kw: groq_completar(m, model_override=groq_model_override, **kw)),
         ("gemini", gemini_completar),
         ("ollama", ollama_completar),
     ]

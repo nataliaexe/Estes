@@ -59,6 +59,7 @@ async def perguntar(
         fontes=resposta.fontes,
         ferramentas_usadas=resposta.ferramentas_usadas,
         sugestoes=resposta.sugestoes,
+        usou_motor_cientifico=resposta.usou_motor_cientifico,
     )
 
 
