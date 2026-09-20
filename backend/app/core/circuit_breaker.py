@@ -24,7 +24,7 @@ class EstadoProvedor:
 class CircuitBreaker:
     def __init__(
         self,
-        max_falhas: int = 3,
+        max_falhas: int = 5,
         tempo_bloqueio: int = 300,  # 5 min
         tempo_reset: int = 60,
     ):

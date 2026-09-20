@@ -224,7 +224,7 @@ async def responder(
             "content": "=== DADOS DO USUARIO ===\n" + "\n".join(dados_usuario),
         })
 
-    for msg in contexto.historico[-6:]:
+    for msg in contexto.historico[-4:]:
         if msg.get("role") in ("user", "assistant"):
             mensagens.append(msg)
 
@@ -305,7 +305,7 @@ def _extrair_material_problema(pergunta: str) -> tuple[str, str]:
 def _fmt_plataforma(rs: list[ResultadoPlataforma]) -> str:
     partes = ["=== CONHECIMENTO DO ATLAS ==="]
     for r in rs:
-        partes.append(f"\n[{r.titulo}] (similaridade {r.score:.3f})\n{r.conteudo}")
+        partes.append(f"\n[{r.titulo}] (sim {r.score:.2f})\n{r.conteudo[:400]}")
     return "\n".join(partes)
 
 
