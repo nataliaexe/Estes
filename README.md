@@ -19,47 +19,6 @@ Meanwhile, Brazil exports **raw cellulose, raw soy, raw iron**. We export what w
 In July 2026, the Brazilian Federal Court declared a "state of unconstitutional things" for the **Maxakali people**. Four times more children die there than the national average — not because of a war, but because they don't have clean water.
 
 > **Estes inverts this logic.** We turn local waste into local solutions.
-
----
-
-## How it works
-
-┌─────────────────────────────────────────────────────────────┐
-│ 1. YOU BRING │
-│ Material (eucalyptus, coffee husk, rice husk) │
-│ + Problem (contaminated water, degraded soil) │
-└──────────────────────────┬──────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ 2. ESTES SEARCHES │
-│ 250M papers · Semantic Scholar · Crossref · OpenAlex │
-│ + Live web · Tavily │
-└──────────────────────────┬──────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ 3. EVIDENCE EXTRACTION │
-│ • DOI + literal excerpt │
-│ • Level: demonstrated / supported / modeled / hypothesis│
-│ • Limitations │
-│ • Anti-hallucination verification │
-└──────────────────────────┬──────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ 4. PROTOCOL GENERATION │
-│ Ready (5 min) · Simple (1 day) · Complete (1 week) │
-└──────────────────────────┬──────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ 5. ACTION │
-│ Test · Filter · Document · Report to MPF/IBAMA/FUNAI │
-└─────────────────────────────────────────────────────────────┘
-text
-
-
 ---
 
 ## What's inside
