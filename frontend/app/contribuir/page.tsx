@@ -10,28 +10,28 @@ import { toast } from "sonner";
 const TIPOS = [
   {
     id: "historia",
-    label: "História",
+    label: "Story",
     descricao: "Conhecimento tradicional, memória, relato oral",
     icone: BookOpen,
     cor: "#4BF98D",
   },
   {
     id: "solucao",
-    label: "Solução",
+    label: "Solution",
     descricao: "Método que você testou e funciona",
     icone: Lightbulb,
     cor: "#A68A42",
   },
   {
     id: "observacao",
-    label: "Observação",
+    label: "Observation",
     descricao: "Algo que você viu no território",
     icone: Eye,
     cor: "#3b82f6",
   },
   {
     id: "correcao",
-    label: "Correção",
+    label: "Correction",
     descricao: "Corrigir um caso do Atlas",
     icone: Pencil,
     cor: "#f97316",
@@ -116,7 +116,7 @@ export default function ContribuirPage() {
             Contribuir
           </p>
           <h1 className="font-display font-black text-4xl md:text-5xl text-elfo-verde-escuro mb-4">
-            Compartilhe conhecimento
+            Share knowledge
           </h1>
           <p className="text-lg text-elfo-cinza">
             Sua história, sua solução ou sua observação pode ajudar outras
@@ -132,7 +132,7 @@ export default function ContribuirPage() {
           {/* Tipo */}
           <div>
             <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-3">
-              Tipo de contribuição
+              Type of contribution
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {TIPOS.map((t) => (
@@ -174,7 +174,7 @@ export default function ContribuirPage() {
               maxLength={300}
               value={form.titulo}
               onChange={(e) => setForm({ ...form, titulo: e.target.value })}
-              placeholder="Resuma em uma frase"
+              placeholder="Summarize in one sentence"
               className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-elfo-verde-vivo/50"
             />
           </div>
@@ -191,7 +191,7 @@ export default function ContribuirPage() {
               rows={8}
               value={form.conteudo}
               onChange={(e) => setForm({ ...form, conteudo: e.target.value })}
-              placeholder="Conte a história, descreva a solução, relate a observação..."
+              placeholder="Tell the story, describe the solution, report the observation..."
               className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-elfo-verde-vivo/50 resize-none"
             />
           </div>
@@ -229,7 +229,7 @@ export default function ContribuirPage() {
             </div>
             <div>
               <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-2">
-                Caso relacionado
+                Related case
               </label>
               <input
                 type="number"
@@ -249,7 +249,7 @@ export default function ContribuirPage() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado">
-                Evidências (opcional)
+                Evidence (optional)
               </label>
               <button
                 type="button"
@@ -282,7 +282,7 @@ export default function ContribuirPage() {
                     </button>
                     <input
                       type="text"
-                      placeholder="Título do paper/referência"
+                      placeholder="Paper/reference title"
                       value={ev.titulo}
                       onChange={(e) => {
                         const novo = [...evidencias];
@@ -303,7 +303,7 @@ export default function ContribuirPage() {
                       className="w-full mb-2 px-3 py-2 text-xs rounded-lg border border-elfo-dourado/20"
                     />
                     <textarea
-                      placeholder="Trecho literal do paper"
+                      placeholder="Literal paper excerpt"
                       rows={2}
                       value={ev.trecho}
                       onChange={(e) => {

@@ -109,17 +109,7 @@ export default function NoticiasPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                      <div className="flex items-center gap-4 text-xs text-elfo-off-white/60">
-                        <div className="flex items-center gap-1">
-                          <Heart size={14} />
-                          {noticia.likes}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MessageCircle size={14} />
-                          {noticia.comentarios}
-                        </div>
-                      </div>
+                    <div className="flex items-center justify-end pt-4 border-t border-white/10">
                       <div className="flex items-center gap-1 text-elfo-verde-vivo text-sm font-medium group-hover:translate-x-1 transition-transform">
                         Ler mais
                         <ArrowRight size={16} />

@@ -3,15 +3,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "./types";
 
-const STORAGE_KEY = "estes_chat_history";
+const STORAGE_KEY = "estes_chat_threads";
 const SESSION_KEY = "estes_chat_session";
 
-function safeParse(raw: string | null): ChatMessage[] {
+export interface ChatThread {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+  updatedAt: number;
+}
+
+function safeParse(raw: string | null): ChatThread[] {
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parsed as ChatMessage[];
-    return [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
@@ -28,12 +34,19 @@ export function getSessionId(): string {
 }
 
 export function useChatHistory() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [threads, setThreads] = useState<ChatThread[]>([]);
+  const [currentId, setCurrentId] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const writeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    setMessages(safeParse(window.localStorage.getItem(STORAGE_KEY)));
+    const saved = safeParse(window.localStorage.getItem(STORAGE_KEY));
+    setThreads(saved);
+    if (saved.length > 0) {
+      setCurrentId(saved[0].id);
+    } else {
+      createNewThread();
+    }
     setHydrated(true);
   }, []);
 
@@ -42,22 +55,82 @@ export function useChatHistory() {
     if (writeTimeout.current) clearTimeout(writeTimeout.current);
     writeTimeout.current = setTimeout(() => {
       try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-      } catch {
-        // storage full
-      }
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
+      } catch {}
     }, 120);
     return () => {
       if (writeTimeout.current) clearTimeout(writeTimeout.current);
     };
-  }, [messages, hydrated]);
+  }, [threads, hydrated]);
 
-  const clear = useCallback(() => {
-    setMessages([]);
-    window.localStorage.removeItem(STORAGE_KEY);
-    const newSid = `s-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-    window.localStorage.setItem(SESSION_KEY, newSid);
+  const current = threads.find((t) => t.id === currentId) || null;
+
+  const setMessages = useCallback(
+    (updater: (prev: ChatMessage[]) => ChatMessage[]) => {
+      if (!currentId) return;
+      setThreads((prev) =>
+        prev.map((t) => {
+          if (t.id !== currentId) return t;
+          const novo = updater(t.messages);
+          return {
+            ...t,
+            messages: novo,
+            title: t.title === "New conversation" && novo[0]
+              ? novo[0].content.slice(0, 50)
+              : t.title,
+            updatedAt: Date.now(),
+          };
+        })
+      );
+    },
+    [currentId]
+  );
+
+  const createNewThread = useCallback(() => {
+    const newThread: ChatThread = {
+      id: `thread-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      title: "New conversation",
+      messages: [],
+      updatedAt: Date.now(),
+    };
+    setThreads((prev) => [newThread, ...prev]);
+    setCurrentId(newThread.id);
+    return newThread.id;
   }, []);
 
-  return { messages, setMessages, clear, hydrated };
+  const deleteThread = useCallback((id: string) => {
+    setThreads((prev) => {
+      const next = prev.filter((t) => t.id !== id);
+      if (next.length === 0) {
+        const newThread: ChatThread = {
+          id: `thread-${Date.now()}`,
+          title: "New conversation",
+          messages: [],
+          updatedAt: Date.now(),
+        };
+        setCurrentId(newThread.id);
+        return [newThread];
+      }
+      return next;
+    });
+  }, []);
+
+  const clear = useCallback(() => {
+    setThreads([]);
+    window.localStorage.removeItem(STORAGE_KEY);
+    createNewThread();
+  }, [createNewThread]);
+
+  return {
+    threads,
+    current,
+    currentId,
+    messages: current?.messages || [],
+    setMessages,
+    createNewThread,
+    setCurrentId,
+    deleteThread,
+    clear,
+    hydrated,
+  };
 }

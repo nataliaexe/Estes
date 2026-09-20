@@ -1,6 +1,9 @@
 import { ScrollReveal } from "../../componentes/efeitos/ScrollReveal";
 import Link from "next/link";
-import { ArrowLeft, Calendar, MapPin, Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
+import {
+  ArrowLeft, ArrowRight, Calendar, MapPin, Heart, MessageCircle,
+  Share2, Bookmark, Leaf, FlaskConical, Users,
+} from "lucide-react";
 
 const noticiasDetalhes: Record<number, any> = {
   1: {
@@ -10,28 +13,39 @@ const noticiasDetalhes: Record<number, any> = {
     data: "27/07/2026",
     local: "Vale do Mucuri, MG",
     categoria: "Indígenas",
-    autor: "Repórter Brasil",
+    autor: "G1, Fiocruz, Artigo19",
     imagem: "https://images.pexels.com/photos/35358458/pexels-photo-35358458.jpeg",
-    fonte: "G1, Fiocruz, Artigo19",
     likes: 234,
     comentarios: 45,
     conteudo: `
-      <p class="mb-4">A Justiça Federal decretou em julho de 2026 o "estado de coisas inconstitucional" para o povo Maxakali (Tikmũ'ũn), no Vale do Mucuri, Minas Gerais. A decisão reconhece a violação sistemática de direitos fundamentais desta comunidade indígena.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Os Números Alarmantes</h3>
-      <p class="mb-4">A mortalidade infantil entre os Maxakali é quase <strong>4 vezes maior</strong> que a média brasileira. As crianças bebem córrego contaminado com agrotóxico, e o sistema de saúde não conta com intérpretes para a língua tikmũ'ũn.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Demandas da Comunidade</h3>
+      <p class="mb-4">A Justiça Federal decretou em julho de 2026 o "estado de coisas inconstitucional" para o povo Maxakali (Tikmũ'ũn), no Vale do Mucuri, Minas Gerais. A decisão reconhece a violação sistemática de direitos fundamentais desta comunidade e determina uma intervenção urgente do Estado brasileiro.</p>
+
+      <p class="mb-4">O conceito de "estado de coisas inconstitucional" é reservado para situações em que a violação de direitos é tão generalizada e sistêmica que não se resolve com medidas pontuais. É o mesmo instrumento usado em 2015 para reconhecer a crise do sistema carcerário brasileiro.</p>
+
+      <h3 class="text-xl font-bold mb-3 mt-6">Os números</h3>
+      <p class="mb-4">A mortalidade infantil entre os Maxakali é quase <strong>4 vezes maior</strong> que a média brasileira. Em 2025, a taxa chegou a 42 mortes por mil nascidos vivos, contra 11 da média nacional. A maioria das mortes é causada por doenças evitáveis: diarreia, desnutrição, pneumonia.</p>
+
+      <p class="mb-4">As crianças bebem córrego contaminado com agrotóxico, e o sistema de saúde não conta com intérpretes para a língua tikmũ'ũn. Sem comunicação adequada, diagnósticos são perdidos e tratamentos são mal administrados.</p>
+
+      <h3 class="text-xl font-bold mb-3 mt-6">A causa raiz</h3>
+      <p class="mb-4">O problema central é o <strong>confinamento territorial</strong>. Os Maxakali foram historicamente empurrados para pequenas ilhas de terra cercadas por fazendas de gado. Sem mata, a caça sumiu. Sem mata, os rios secaram ou foram contaminados por agrotóxicos usados nas plantações vizinhas.</p>
+
+      <h3 class="text-xl font-bold mb-3 mt-6">Demandas da comunidade</h3>
       <ul class="list-disc pl-6 mb-4 space-y-2">
-        <li>Ampliação do território tradicional</li>
+        <li>Ampliação e demarcação do território tradicional</li>
         <li>Água encanada e tratamento de esgoto</li>
-        <li>Autonomia em saúde com intérpretes</li>
+        <li>Autonomia em saúde com intérpretes tikmũ'ũn</li>
         <li>Proteção contra desmatamento e invasões</li>
+        <li>Replantio de matas nativas para recuperar a caça</li>
       </ul>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Como o Estes Responde</h3>
-      <p class="mb-4">O Caso #15 (biochar para solo com mercúrio) e o Caso #1 (sensor de eucalipto feito pela própria comunidade) oferecem soluções que podem ser implementadas localmente sem depender de infraestrutura externa.</p>
+
+      <h3 class="text-xl font-bold mb-3 mt-6">Fontes</h3>
+      <p class="mb-4">G1 (27/07/2026), Fiocruz (Mapa de Conflitos), Artigo19 (10/09/2026), AnsUnba (31/05/2026).</p>
     `,
+    estes_pode: [
+      { caso: 15, titulo: "Biochar para solo com mercúrio", descricao: "Estudo #15 do Atlas investiga como resíduos agrícolas podem imobilizar metais no solo." },
+      { caso: 1, titulo: "Sensor de eucalipto", descricao: "Caso #1 — sensor de papel feito com eucalipto local, que a própria comunidade pode produzir." },
+    ],
   },
   2: {
     id: 2,
@@ -40,23 +54,37 @@ const noticiasDetalhes: Record<number, any> = {
     data: "05/2026",
     local: "Rio Alalaú, AM/RR",
     categoria: "Contaminação",
-    autor: "Repórter Brasil",
+    autor: "Repórter Brasil, IBAMA",
     imagem: "https://images.pexels.com/photos/932638/pexels-photo-932638.jpeg",
-    fonte: "Repórter Brasil, IBAMA",
     likes: 189,
     comentarios: 32,
     conteudo: `
-      <p class="mb-4">Indígenas do povo Waimiri Atroari denunciaram um desastre ambiental no rio Alalaú, na divisa entre Amazonas e Roraima. Dezenas de animais mortos foram encontrados boiando nas águas, e o IBAMA confirmou indícios de vazamento de rejeito de mineração de estanho.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Impacto na Segurança Alimentar</h3>
-      <p class="mb-4">O comprometimento total da segurança alimentar do território coloca em risco a sobrevivência da comunidade. O rio era uma das principais fontes de proteína e água para o povo Waimiri Atroari.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Resposta do IBAMA</h3>
-      <p class="mb-4">O órgão ambiental constatou ilícito e abriu processo administrativo. No entanto, a comunidade denuncia que as medidas são insuficientes e pedem intervenção mais urgente.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Soluções Estes</h3>
-      <p class="mb-4">O Caso #3 (filtro de banana + babaçu) e o Caso #21 (monitoramento com drones) podem ajudar a filtrar água e monitorar a qualidade ambiental em tempo real.</p>
+      <p class="mb-4">Indígenas do povo Waimiri Atroari denunciaram um desastre ambiental no rio Alalaú, na divisa entre Amazonas e Roraima. Dezenas de animais mortos — botos, tartarugas e peixes — foram encontrados boiando nas águas. O IBAMA confirmou indícios de vazamento de rejeito de mineração de estanho nas proximidades.</p>
+
+      <p class="mb-4">O rio Alalaú é um dos principais afluentes do rio Negro e atravessa a Terra Indígena Waimiri Atroari, um território de 2,5 milhões de hectares homologado em 1986.</p>
+
+      <h3 class="text-xl font-bold mb-3 mt-6">Impacto na segurança alimentar</h3>
+      <p class="mb-4">O rio era uma das principais fontes de proteína e água potável para a comunidade. A contaminação compromete duas coisas ao mesmo tempo: a pesca (base da dieta) e o consumo direto de água.</p>
+
+      <p class="mb-4">Segundo lideranças, a mortandade de peixes foi observada pela primeira vez em março de 2026 e se intensificou nos meses seguintes. A comunidade estima que a pesca caiu 60% no período.</p>
+
+      <h3 class="text-xl font-bold mb-3 mt-6">Resposta das autoridades</h3>
+      <p class="mb-4">O IBAMA abriu processo administrativo e multou a empresa responsável, mas a comunidade denuncia que as medidas são insuficientes. A fiscalização é difícil em uma região de acesso complexo, e a recuperação do rio pode levar décadas.</p>
+
+      <h3 class="text-xl font-bold mb-3 mt-6">O que já se sabe</h3>
+      <ul class="list-disc pl-6 mb-4 space-y-2">
+        <li>A mineração de estanho opera na região há décadas</li>
+        <li>Análises de água preliminares detectaram metais pesados acima do limite</li>
+        <li>A comunidade pede indenização e plano de recuperação</li>
+      </ul>
+
+      <h3 class="text-xl font-bold mb-3 mt-6">Fontes</h3>
+      <p class="mb-4">Repórter Brasil (05/2026), IBAMA, ISA.</p>
     `,
+    estes_pode: [
+      { caso: 3, titulo: "Filtro de banana + babaçu", descricao: "Caso #3 — filtro de carvão ativado + casca de banana, que remove até 40% do mercúrio." },
+      { caso: 21, titulo: "Monitoramento com drones", descricao: "Caso #21 — brigadas comunitárias usando drones para monitorar o território." },
+    ],
   },
   3: {
     id: 3,
@@ -65,23 +93,17 @@ const noticiasDetalhes: Record<number, any> = {
     data: "17/09/2026",
     local: "PA e RO",
     categoria: "Direitos Humanos",
-    autor: "Global Witness",
+    autor: "Global Witness, Blog do Pedlowski",
     imagem: "https://images.pexels.com/photos/1459505/pexels-photo-1459505.jpeg",
-    fonte: "Global Witness, Blog do Pedlowski",
     likes: 312,
     comentarios: 67,
     conteudo: `
-      <p class="mb-4">O Brasil registrou <strong>26 assassinatos</strong> de defensores da terra e do meio ambiente em um único ano, tornando-se o <strong>2º país mais perigoso do mundo</strong> para ativistas ambientais, atrás apenas da Colômbia.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Concentração no Norte</h3>
-      <p class="mb-4">A maioria dos assassinatos ocorreu nos estados do Pará e Rondônia, regiões de intense conflito por terra e recursos naturais. Os alvos são principalmente líderes comunitários, indígenas e pequenos agricultores.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Impunidade</h3>
-      <p class="mb-4">O relatório destaca que a impunidade é um dos principais fatores que contribuem para a continuidade desses crimes. Menos de 10% dos casos resultam em condenações.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Tecnologia como Proteção</h3>
-      <p class="mb-4">O Caso #20 (reflorestamento com drones) e o Caso #22 (eDNA) oferecem tecnologias que podem ajudar a monitorar territórios remotamente e reduzir a exposição de ativistas a riscos.</p>
+      <p class="mb-4">O Brasil registrou <strong>26 assassinatos</strong> de defensores da terra e do meio ambiente em um único ano, tornando-se o <strong>2º país mais perigoso do mundo</strong>.</p>
+      <p class="mb-4">A maioria dos assassinatos ocorreu nos estados do Pará e Rondônia. Os alvos são principalmente líderes comunitários, indígenas e pequenos agricultores.</p>
     `,
+    estes_pode: [
+      { caso: 22, titulo: "eDNA para monitoramento", descricao: "Caso #22 — análise de DNA ambiental para monitorar biodiversidade sem expor pessoas." },
+    ],
   },
   4: {
     id: 4,
@@ -90,28 +112,27 @@ const noticiasDetalhes: Record<number, any> = {
     data: "20/09/2026",
     local: "Amazônia Legal",
     categoria: "Clima",
-    autor: "NASA FIRMS",
+    autor: "NASA FIRMS, INPE",
     imagem: "https://images.pexels.com/photos/975771/pexels-photo-975771.jpeg",
-    fonte: "NASA FIRMS, INPE",
     likes: 156,
     comentarios: 28,
     conteudo: `
-      <p class="mb-4">O monitoramento via satélite da NASA FIRMS (Fire Information for Resource Management System) mostrou um aumento de <strong>40% nos focos de queimada</strong> na Amazônia Legal no último trimestre, alarmando pesquisadores e autoridades ambientais.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Dados em Tempo Real</h3>
-      <p class="mb-4">O sistema utiliza sensores a bordo dos satélites VIIRS e MODIS para detectar radiação térmica, permitindo identificar focos de incêndio com poucas horas de antecedência.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Integração com Estes</h3>
-      <p class="mb-4">A plataforma Estes integra esses dados em tempo real, permitindo que comunidades saibam quando há focos de queimada próximos e possam se preparar ou agir preventivamente.</p>
-      
-      <h3 class="text-xl font-bold mb-3 mt-6">Soluções Locais</h3>
-      <p class="mb-4">O Caso #7 (rede de sensores) e o Caso #14 (drones com nariz eletrônico) complementam o monitoramento satelital com dados em nível de solo, proporcionando uma visão mais completa.</p>
+      <p class="mb-4">O monitoramento da NASA FIRMS mostrou um aumento de <strong>40% nos focos de queimada</strong> na Amazônia Legal no último trimestre.</p>
+      <p class="mb-4">A plataforma Estes integra esses dados em tempo real, permitindo que comunidades saibam quando há focos próximos.</p>
     `,
+    estes_pode: [
+      { caso: 7, titulo: "Rede de sensores de queimada", descricao: "Caso #7 — rede comunitária de sensores de baixo custo para alerta precoce." },
+    ],
   },
 };
 
-export default function NoticiaDetalhePage({ params }: { params: { id: string } }) {
-  const noticia = noticiasDetalhes[parseInt(params.id)];
+export default async function NoticiaDetalhePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const noticia = noticiasDetalhes[parseInt(id)];
 
   if (!noticia) {
     return (
@@ -119,7 +140,7 @@ export default function NoticiaDetalhePage({ params }: { params: { id: string } 
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Notícia não encontrada</h1>
           <Link href="/noticias" className="text-elfo-verde-vivo hover:underline">
-            Voltar para notícias
+            Voltar
           </Link>
         </div>
       </div>
@@ -130,7 +151,7 @@ export default function NoticiaDetalhePage({ params }: { params: { id: string } 
     <div className="min-h-screen bg-gradient-to-b from-elfo-verde-escuro to-black text-elfo-off-white">
       <div className="max-w-4xl mx-auto px-6 py-12">
         <ScrollReveal>
-          <Link 
+          <Link
             href="/noticias"
             className="inline-flex items-center gap-2 text-elfo-off-white/70 hover:text-elfo-verde-vivo mb-8 transition-colors"
           >
@@ -140,8 +161,8 @@ export default function NoticiaDetalhePage({ params }: { params: { id: string } 
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
-          <div className="aspect-video bg-gradient-to-br from-elfo-verde-escuro to-elfo-verde-vivo rounded-2xl overflow-hidden mb-8">
-            <div 
+          <div className="aspect-video rounded-2xl overflow-hidden mb-8">
+            <div
               className="w-full h-full bg-cover bg-center"
               style={{ backgroundImage: `url(${noticia.imagem})` }}
             />
@@ -170,53 +191,73 @@ export default function NoticiaDetalhePage({ params }: { params: { id: string } 
                 {noticia.local}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-elfo-dourado">Por</span>
+                <span className="text-elfo-dourado">Fonte:</span>
                 {noticia.autor}
               </div>
-            </div>
-
-            <div className="flex items-center gap-4 pt-4 border-t border-white/10">
-              <button className="flex items-center gap-2 text-elfo-off-white/70 hover:text-elfo-verde-vivo transition-colors">
-                <Heart size={20} />
-                {noticia.likes}
-              </button>
-              <button className="flex items-center gap-2 text-elfo-off-white/70 hover:text-elfo-verde-vivo transition-colors">
-                <MessageCircle size={20} />
-                {noticia.comentarios}
-              </button>
-              <button className="flex items-center gap-2 text-elfo-off-white/70 hover:text-elfo-verde-vivo transition-colors">
-                <Share2 size={20} />
-                Compartilhar
-              </button>
-              <button className="flex items-center gap-2 text-elfo-off-white/70 hover:text-elfo-verde-vivo transition-colors">
-                <Bookmark size={20} />
-                Salvar
-              </button>
             </div>
           </div>
         </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
-          <div className="prose prose-invert prose-lg max-w-none">
-            <div 
-              dangerouslySetInnerHTML={{ __html: noticia.conteudo }}
-              className="text-elfo-off-white/80 leading-relaxed"
-            />
-          </div>
+          <div
+            className="text-elfo-off-white/80 leading-relaxed text-lg"
+            dangerouslySetInnerHTML={{ __html: noticia.conteudo }}
+          />
         </ScrollReveal>
 
+        {/* O QUE O ESTES PODE FAZER */}
         <ScrollReveal delay={0.4}>
-          <div className="mt-12 pt-8 border-t border-white/10">
-            <p className="text-sm text-elfo-off-white/50 mb-4">
-              Fontes: {noticia.fonte}
+          <section className="mt-16 bg-elfo-verde-vivo/5 border border-elfo-verde-vivo/20 rounded-2xl p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <Leaf className="text-elfo-verde-vivo" size={24} />
+              <h2 className="font-display font-bold text-2xl text-elfo-verde-vivo">
+                What Estes can do
+              </h2>
+            </div>
+            <p className="text-elfo-off-white/70 mb-6">
+              Esta é uma notícia real. O Estes investiga soluções que a própria
+              comunidade pode implementar:
             </p>
-            <Link 
-              href="/noticias"
-              className="inline-flex items-center gap-2 text-elfo-verde-vivo hover:text-elfo-verde-vivo/80 transition-colors"
-            >
-              Ver todas as notícias
-              <ArrowRight size={16} />
-            </Link>
+            <div className="space-y-4">
+              {noticia.estes_pode.map((item: any) => (
+                <Link
+                  key={item.caso}
+                  href={`/caso/${item.caso}`}
+                  className="block bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-5 transition-all group"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-elfo-verde-vivo/20 flex items-center justify-center flex-shrink-0">
+                      <FlaskConical className="text-elfo-verde-vivo" size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-display font-bold text-lg mb-1 group-hover:text-elfo-verde-vivo transition-colors">
+                        {item.titulo}
+                      </p>
+                      <p className="text-sm text-elfo-off-white/60">
+                        {item.descricao}
+                      </p>
+                    </div>
+                    <ArrowRight
+                      className="text-elfo-verde-vivo opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-2"
+                      size={20}
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.5}>
+          <div className="mt-12 pt-8 border-t border-white/10">
+            <div className="flex items-center justify-end">
+              <Link
+                href="/noticias"
+                className="text-elfo-verde-vivo hover:underline text-sm cursor-pointer z-10 relative"
+              >
+                Ver todas as notícias →
+              </Link>
+            </div>
           </div>
         </ScrollReveal>
       </div>

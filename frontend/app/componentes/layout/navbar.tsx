@@ -2,27 +2,28 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Menu, X, Leaf, LogOut, User as UserIcon, Globe, Newspaper } from "lucide-react";
+import { useState } from "react";
+import { Menu, X, Leaf, LogOut, User as UserIcon } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAuth } from "../../contextos/AuthContext";
-
-const links = [
-  { href: "/", label: "Início" },
-  { href: "/atlas", label: "Atlas" },
-  { href: "/noticias", label: "Notícias" },
-  { href: "/explorar", label: "Explorar" },
-  { href: "/chat", label: "Assistente" },
-  { href: "/medir", label: "Medir" },
-  { href: "/contribuir", label: "Contribuir" },
-];
+import { useI18n } from "../../lib/i18n/useI18n";
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { usuario, sair } = useAuth();
+  const { locale, setLocale, t } = useI18n();
   const [aberto, setAberto] = useState(false);
-  const [idioma, setIdioma] = useState<'pt' | 'en'>('pt');
+
+  const links = [
+    { href: "/", label: t.nav.home },
+    { href: "/atlas", label: t.nav.atlas },
+    { href: "/noticias", label: t.nav.news },
+    { href: "/explorar", label: t.nav.explore },
+    { href: "/chat", label: t.nav.assistant },
+    { href: "/medir", label: t.nav.measure },
+    { href: "/contribuir", label: t.nav.contribute },
+  ];
 
   function handleSair() {
     sair();
@@ -30,9 +31,7 @@ export function Navbar() {
   }
 
   return (
-    <nav
-      className="sticky top-0 z-50 bg-elfo-verde-escuro/95 backdrop-blur-md border-b border-elfo-dourado/20"
-    >
+    <nav className="sticky top-0 z-50 bg-elfo-verde-escuro/95 backdrop-blur-md border-b border-elfo-dourado/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
@@ -45,7 +44,7 @@ export function Navbar() {
                 Estes
               </span>
               <span className="text-[10px] text-elfo-off-white/60 tracking-wider uppercase">
-                cidadania ambiental
+                {t.nav.tagline}
               </span>
             </div>
           </Link>
@@ -60,7 +59,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                    "px-3 py-2 rounded-lg text-sm font-medium transition-all",
                     ativo
                       ? "bg-elfo-verde-vivo/15 text-elfo-verde-vivo"
                       : "text-elfo-off-white/80 hover:text-elfo-off-white hover:bg-elfo-off-white/5"
@@ -71,26 +70,28 @@ export function Navbar() {
               );
             })}
 
-            {/* Language Switcher */}
+            {/* Toggle idioma */}
             <button
-              onClick={() => setIdioma(idioma === 'pt' ? 'en' : 'pt')}
-              className="ml-2 p-2 rounded-lg text-elfo-off-white/70 hover:text-elfo-off-white hover:bg-elfo-off-white/5 transition-all"
-              title="Switch Language"
+              onClick={() => setLocale(locale === "pt" ? "en" : "pt")}
+              className="ml-2 px-2 py-1 rounded-lg text-xs font-bold text-elfo-off-white/70 hover:text-elfo-verde-vivo hover:bg-elfo-off-white/5 transition-all"
+              title={locale === "pt" ? "Switch to English" : "Mudar para Português"}
             >
-              <Globe size={16} />
-              <span className="text-xs ml-1">{idioma.toUpperCase()}</span>
+              {locale.toUpperCase()}
             </button>
 
             {usuario ? (
               <div className="ml-2 flex items-center gap-2">
-                <span className="text-xs text-elfo-off-white/70 flex items-center gap-1">
+                <Link
+                  href="/perfil"
+                  className="text-xs text-elfo-off-white/70 hover:text-elfo-verde-vivo flex items-center gap-1 transition-colors"
+                >
                   <UserIcon size={14} />
                   {usuario.nome.split(" ")[0]}
-                </span>
+                </Link>
                 <button
                   onClick={handleSair}
                   className="p-2 rounded-lg text-elfo-off-white/70 hover:text-elfo-off-white hover:bg-elfo-off-white/5 transition-all"
-                  title="Sair"
+                  title={t.nav.signOut}
                 >
                   <LogOut size={16} />
                 </button>
@@ -100,7 +101,7 @@ export function Navbar() {
                 href="/entrar"
                 className="ml-2 px-4 py-2 rounded-lg text-sm font-semibold bg-elfo-verde-vivo text-elfo-verde-escuro hover:bg-elfo-verde-vivo/90 transition-all"
               >
-                Entrar
+                {t.nav.signIn}
               </Link>
             )}
           </div>
@@ -133,7 +134,15 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-
+            <button
+              onClick={() => {
+                setLocale(locale === "pt" ? "en" : "pt");
+                setAberto(false);
+              }}
+              className="block w-full text-left px-4 py-2 rounded-lg text-sm font-bold text-elfo-verde-vivo"
+            >
+              {locale === "pt" ? "Switch to English" : "Mudar para Português"}
+            </button>
             {usuario ? (
               <button
                 onClick={() => {
@@ -142,7 +151,7 @@ export function Navbar() {
                 }}
                 className="block w-full text-left px-4 py-2 rounded-lg text-sm font-medium text-elfo-off-white/80"
               >
-                Sair ({usuario.nome.split(" ")[0]})
+                {t.nav.signOut} ({usuario.nome.split(" ")[0]})
               </button>
             ) : (
               <Link
@@ -150,7 +159,7 @@ export function Navbar() {
                 onClick={() => setAberto(false)}
                 className="block px-4 py-2 rounded-lg text-sm font-semibold bg-elfo-verde-vivo text-elfo-verde-escuro text-center"
               >
-                Entrar
+                {t.nav.signIn}
               </Link>
             )}
           </div>

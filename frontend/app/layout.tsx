@@ -3,6 +3,7 @@ import { Inter, DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import { Navbar } from "./componentes/layout/navbar";
 import { AuthProvider } from "./contextos/AuthContext";
+import { I18nProvider } from "./lib/i18n/useI18n";
 import { Footer } from "./componentes/layout/footer";
 import "./globals.css";
 
@@ -45,11 +46,13 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${inter.variable} ${dmSans.variable}`}>
       <body className="min-h-screen flex flex-col">
-        <AuthProvider>
+        <I18nProvider>
+          <AuthProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
         </AuthProvider>
+        </I18nProvider>
         <Toaster
           position="top-right"
           toastOptions={{

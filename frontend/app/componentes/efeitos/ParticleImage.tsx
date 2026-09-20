@@ -75,11 +75,12 @@ export function ParticleImage({
         texture.magFilter = THREE.LinearFilter;
 
         // Pega dimensões reais
-        const img = texture.image as HTMLImageElement;
+        const img = texture.image as HTMLImageElement | undefined;
+        if (!img) return;
         const aspect = img.width / img.height;
 
         function resize() {
-          if (!container) return;
+          if (!container || !canvas) return;
           const w = container.clientWidth;
           const h = container.clientHeight;
           renderer.setSize(w, h, false);
