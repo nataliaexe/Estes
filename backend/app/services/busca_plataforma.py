@@ -13,7 +13,7 @@ log = get_logger(__name__)
 
 # Limiares de qualidade
 SCORE_MINIMO = 0.50
-LIMITE_PADRAO = 3
+LIMITE_PADRAO = 2
 
 
 @dataclass

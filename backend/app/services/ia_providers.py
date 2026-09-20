@@ -62,6 +62,9 @@ async def groq_completar(
             r = await client.post(url, headers=headers, json=payload)
 
             if r.status_code == 429:
+                # Le Retry-After se existir
+                retry_after = int(r.headers.get("Retry-After", 2))
+                await asyncio.sleep(min(retry_after, 5))
                 circuit_breaker.registrar_falha("groq")
                 raise ProvedorIndisponivel(f"Groq 429 rate limit")
 
@@ -153,8 +156,29 @@ async def gemini_completar(
         raise ProvedorIndisponivel(f"Gemini rede: {e}")
 
     try:
-        texto = data["candidates"][0]["content"]["parts"][0]["text"]
-    except (KeyError, IndexError) as e:
+        # Parser tolerante para diferentes formatos do Gemini
+        candidates = data.get("candidates", [])
+        if not candidates:
+            raise ProvedorIndisponivel("Gemini sem candidates")
+
+        content = candidates[0].get("content", {})
+        parts = content.get("parts", [])
+        if not parts:
+            # Tenta pegar texto de estrutura alternativa
+            text = content.get("text") or data.get("text")
+            if text:
+                texto = text
+            else:
+                raise ProvedorIndisponivel(f"Gemini sem parts: {list(content.keys())}")
+        else:
+            # Pega o texto do primeiro part que tenha 'text'
+            texto = ""
+            for p in parts:
+                if isinstance(p, dict) and "text" in p:
+                    texto += p["text"]
+            if not texto:
+                raise ProvedorIndisponivel("Gemini sem texto nos parts")
+    except (KeyError, IndexError, TypeError) as e:
         circuit_breaker.registrar_falha("gemini")
         raise ProvedorIndisponivel(f"Gemini resposta invalida: {e}")
 
@@ -189,7 +213,7 @@ async def ollama_completar(
         "stream": False,
         "options": {
             "temperature": temperatura,
-            "num_predict": max_tokens,
+            "num_predict": min(max_tokens, 500),  # limita resposta
         },
     }
 

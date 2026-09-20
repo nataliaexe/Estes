@@ -30,46 +30,17 @@ from app.services.ia_providers import (
 log = get_logger(__name__)
 
 
-SYSTEM_PROMPT = """You are the assistant for the Estes platform.
+SYSTEM_PROMPT = """You are the Estes assistant for environmental investigation.
 
-DEFAULT LANGUAGE: English. Always respond in English unless the user writes in another language.
+You help users turn local materials (eucalyptus, coffee husk, rice husk) into environmental solutions.
 
-Estes is a platform for environmental citizenship.
-
-Estes e uma plataforma de cidadania ambiental que transforma recursos
-locais em solucoes ambientais (sensores, filtros, biochar, sensores de
-queimada, biodigestores, drones, eDNA, etc) e garante direitos
-ambientais por meio de evidencia cientifica.
-
-Seu papel:
-1. Ajudar pessoas leigas a resolver problemas ambientais concretos.
-2. Consultar o ATLAS quando o problema ja tiver caso cadastrado.
-3. Consultar a LITERATURA CIENTIFICA quando o material for novo.
-4. Orientar passo a passo com linguagem simples.
-5. Citar fontes SEMPRE (caso do Atlas ou paper com DOI).
-6. Reconhecer limites (nao substituir medico, laboratorio, orgao).
-7. Se for risco de vida, orientar procurar orgao (MPF, IBAMA, FUNAI,
-   SESAI, Defesa Civil).
-
-REGRAS CRITICAS:
-- NUNCA invente informacao fora do contexto.
-- Se o contexto nao tiver a resposta, diga "nao tenho essa informacao".
-- Cite a fonte assim: "Caso #N do Atlas (evidencia: X)" ou
-  "Paper: [titulo] (DOI: ...)".
-- Se for evidencia cientifica nova, sempre mostre nivel:
-  demonstrado, suportado, modelado, hipotese.
-
-CRITICAL: Always respond in the SAME language as the user's question.
-- If the question is in English, respond in English.
-- If the question is in Portuguese, respond in Portuguese.
-- If the question is in Spanish, respond in Spanish.
-- Never mix languages.
-
-Formatacao:
-- Sem emoji.
-- Paragrafos curtos e listas com hifen.
-- Sem tabelas, sem #, sem negrito excessivo.
-- Portugues do Brasil.
+Rules:
+- ALWAYS respond in English, regardless of the question language.
+- Cite sources: "Caso #N do Atlas" or "Segundo [veiculo], ...".
+- Be direct. No introductions like "Based on...".
+- Use numbered lists for steps.
+- If unsure, say "Nao tenho essa informacao".
+- Never invent facts.
 """
 
 
@@ -117,10 +88,12 @@ Pergunta: "{pergunta}"
 Responda APENAS com uma palavra: PLATAFORMA, WEB, NOVO_MATERIAL, AMBAS ou CONVERSA."""
 
     try:
+        from app.core.config import settings
         resposta = await completar_cascata(
             [{"role": "user", "content": prompt}],
             temperatura=0.0,
             max_tokens=10,
+            groq_model_override='llama-3.1-8b-instant',
         )
         limpo = re.sub(r"[^A-Z_]", "", resposta.texto.strip().upper())
         if limpo not in ("PLATAFORMA", "WEB", "NOVO_MATERIAL", "AMBAS", "CONVERSA"):
@@ -199,7 +172,17 @@ async def responder(
                 consulta = f"{pergunta} {contexto.municipio} {contexto.uf}"
             elif contexto.uf:
                 consulta = f"{pergunta} {contexto.uf}"
-            resultados = await buscar_web(consulta, max_resultados=4)
+            resultados = await buscar_web(
+                consulta,
+                max_resultados=3,
+                incluir_dominios=[
+                    "scielo.br", "scielo.org", "arxiv.org", "nature.com",
+                    "springer.com", "sciencedirect.com", "mdpi.com",
+                    "ncbi.nlm.nih.gov", "pubmed.ncbi.nlm.nih.gov",
+                    "embrapa.br", "fiocruz.br", "inpe.br", "gov.br",
+                    "usp.br", "unicamp.br", "ufmg.br", "ufrj.br",
+                ],
+            )
             if resultados:
                 ferramentas.append("busca_web")
                 contexto_extra.append(_fmt_web(resultados))
@@ -224,7 +207,7 @@ async def responder(
             "content": "=== DADOS DO USUARIO ===\n" + "\n".join(dados_usuario),
         })
 
-    for msg in contexto.historico[-4:]:
+    for msg in contexto.historico[-2:]:
         if msg.get("role") in ("user", "assistant"):
             mensagens.append(msg)
 
@@ -305,14 +288,14 @@ def _extrair_material_problema(pergunta: str) -> tuple[str, str]:
 def _fmt_plataforma(rs: list[ResultadoPlataforma]) -> str:
     partes = ["=== CONHECIMENTO DO ATLAS ==="]
     for r in rs:
-        partes.append(f"\n[{r.titulo}] (sim {r.score:.2f})\n{r.conteudo[:400]}")
+        partes.append(f"\n[{r.titulo}] (sim {r.score:.2f})\n{r.conteudo[:150]}")
     return "\n".join(partes)
 
 
 def _fmt_web(rs: list[ResultadoWeb]) -> str:
     partes = ["=== RESULTADOS DA WEB ==="]
     for r in rs:
-        partes.append(f"\n[{r.titulo}]\nURL: {r.url}\n{r.conteudo[:400]}")
+        partes.append(f"\n[{r.titulo}]\nURL: {r.url}\n{r.conteudo[:150]}")
     return "\n".join(partes)
 
 

@@ -96,13 +96,11 @@ export function ChatInterface() {
                   )
                 );
               } else if (tipo === "token") {
-                textoAtual = textoAtual + (obj.texto || "");
-                const snapshot = textoAtual;
-                const snapshotFontes = [...fontes];
+                textoAtual += obj.texto || "";
                 setMessages((prev) =>
                   prev.map((m) =>
                     m.id === assistantId
-                      ? { ...m, content: snapshot, sources: snapshotFontes, streaming: true }
+                      ? { ...m, content: textoAtual, sources: fontes }
                       : m
                   )
                 );
