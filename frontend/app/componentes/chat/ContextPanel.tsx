@@ -89,7 +89,8 @@ export function ContextPanel({
                 key={item.id}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-lg border border-elfo-dourado/30 bg-elfo-creme/50 px-3 py-2"
+                className="rounded-lg border border-elfo-dourado/30 bg-elfo-creme/50 px-3 py-2 cursor-pointer hover:bg-elfo-verde-vivo/20 transition-colors"
+                onClick={() => onJumpTo(item.id)}
               >
                 <p className="truncate text-sm font-medium text-elfo-verde-escuro">
                   {item.title}

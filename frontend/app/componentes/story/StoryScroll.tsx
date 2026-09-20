@@ -148,11 +148,15 @@ export function StoryScroll({ onComplete, manualMode = false }: StoryScrollProps
       opacity: 0,
       scale: 1.15,
       filter: "blur(10px)",
+      rotateY: 15,
+      rotateX: 5,
     },
     center: {
       opacity: 1,
       scale: 1,
       filter: "blur(0px)",
+      rotateY: 0,
+      rotateX: 0,
       transition: {
         duration: 1.2,
         ease: [0.22, 1, 0.36, 1],
@@ -162,6 +166,8 @@ export function StoryScroll({ onComplete, manualMode = false }: StoryScrollProps
       opacity: 0,
       scale: 0.9,
       filter: "blur(5px)",
+      rotateY: -15,
+      rotateX: -5,
       transition: {
         duration: 0.8,
         ease: [0.22, 1, 0.36, 1],
@@ -175,6 +181,7 @@ export function StoryScroll({ onComplete, manualMode = false }: StoryScrollProps
       className="relative h-screen w-full overflow-hidden bg-black"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
+      style={{ perspective: "1000px" }}
     >
       {/* BACKGROUND - Vídeo ou Imagem */}
       <div className="absolute inset-0 z-0">
@@ -186,6 +193,9 @@ export function StoryScroll({ onComplete, manualMode = false }: StoryScrollProps
             animate="center"
             exit="exit"
             className="absolute inset-0"
+            style={{
+              transformStyle: "preserve-3d",
+            }}
           >
             {isVideo(stage.image) ? (
               <video

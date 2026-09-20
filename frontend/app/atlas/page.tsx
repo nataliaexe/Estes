@@ -23,7 +23,7 @@ export default async function AtlasPage() {
   const casos = await getCasos();
 
   return (
-    <div className="min-h-screen bg-elfo-creme">
+    <div className="min-h-screen bg-gradient-to-b from-elfo-verde-escuro to-black text-elfo-off-white">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <header className="mb-10">
           <p className="text-xs uppercase tracking-widest text-elfo-dourado font-bold mb-3">

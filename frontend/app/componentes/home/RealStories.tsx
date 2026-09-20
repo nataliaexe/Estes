@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ScrollReveal } from "../efeitos/ScrollReveal";
+import Link from "next/link";
 import { Heart, Droplet, Flame as FlameIcon, AlertTriangle } from "lucide-react";
 
 const realStories = [
@@ -82,55 +83,57 @@ export function RealStories() {
             const Icon = iconMap[story.icon as keyof typeof iconMap];
             return (
               <ScrollReveal key={story.id} delay={index * 0.1}>
-                <motion.div
-                  whileHover={{ scale: 1.02, y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className={`relative p-8 rounded-2xl border ${story.borderColor} ${story.bgColor} backdrop-blur-sm overflow-hidden group`}
-                >
-                  {/* Glow effect on hover */}
-                  <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{
-                      background: `radial-gradient(circle at 50% 0%, ${story.bgColor.replace('/10', '/20')} 0%, transparent 60%)`,
-                    }}
-                  />
+                <Link href="/noticias">
+                  <motion.div
+                    whileHover={{ scale: 1.02, y: -4 }}
+                    transition={{ duration: 0.3 }}
+                    className={`relative p-8 rounded-2xl border ${story.borderColor} ${story.bgColor} backdrop-blur-sm overflow-hidden group cursor-pointer`}
+                  >
+                    {/* Glow effect on hover */}
+                    <div 
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: `radial-gradient(circle at 50% 0%, ${story.bgColor.replace('/10', '/20')} 0%, transparent 60%)`,
+                      }}
+                    />
 
-                  <div className="relative">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className={`p-3 rounded-xl ${story.bgColor} ${story.color}`}>
-                        <Icon size={24} />
+                    <div className="relative">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className={`p-3 rounded-xl ${story.bgColor} ${story.color}`}>
+                          <Icon size={24} />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-display font-bold text-2xl mb-1">
+                            {story.title}
+                          </h3>
+                          <p className={`text-sm ${story.color} font-medium`}>
+                            {story.location}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-display font-bold text-2xl mb-1">
-                          {story.title}
-                        </h3>
-                        <p className={`text-sm ${story.color} font-medium`}>
-                          {story.location}
-                        </p>
+
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-elfo-off-white/50 mb-2">
+                            Problema
+                          </p>
+                          <p className="text-elfo-off-white/80 leading-relaxed">
+                            {story.problem}
+                          </p>
+                        </div>
+
+                        <div className="pt-4 border-t border-white/10">
+                          <p className="text-xs uppercase tracking-wider text-elfo-dourado mb-2">
+                            Solução Estes
+                          </p>
+                          <p className="text-elfo-verde-vivo text-sm">
+                            {story.solution}
+                          </p>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-elfo-off-white/50 mb-2">
-                          Problema
-                        </p>
-                        <p className="text-elfo-off-white/80 leading-relaxed">
-                          {story.problem}
-                        </p>
-                      </div>
-
-                      <div className="pt-4 border-t border-white/10">
-                        <p className="text-xs uppercase tracking-wider text-elfo-dourado mb-2">
-                          Solução Estes
-                        </p>
-                        <p className="text-elfo-verde-vivo text-sm">
-                          {story.solution}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </Link>
               </ScrollReveal>
             );
           })}
