@@ -14,9 +14,9 @@ async function getCasos() {
 }
 
 export const metadata = {
-  title: "Atlas Brasileiro",
+  title: "Atlas Brasileiro - Rede Social",
   description:
-    "22 soluções que transformam recursos locais em respostas ambientais.",
+    "Comunidade de soluções ambientais postadas por cidadãos de todo o Brasil.",
 };
 
 export default async function AtlasPage() {
@@ -30,13 +30,12 @@ export default async function AtlasPage() {
             Atlas Brasileiro
           </p>
           <h1 className="font-display font-black text-4xl md:text-5xl text-elfo-verde-escuro mb-4">
-            Soluções para {casos.length} problemas reais
+            {casos.length} casos postados pela comunidade
           </h1>
           <p className="text-lg text-elfo-cinza max-w-3xl">
-            Cada caso transforma um recurso local em uma resposta para um
-            problema ambiental concreto. Todos têm nível de evidência
-            explícito — do demonstrado experimentalmente à hipótese em
-            estudo.
+            Uma rede social de soluções ambientais. Cada caso transforma um 
+            recurso local em uma resposta para um problema ambiental concreto. 
+            Contribua, vote e corrixa soluções validadas pela comunidade.
           </p>
         </header>
 

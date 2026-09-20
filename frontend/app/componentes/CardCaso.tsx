@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MapPin, Cpu } from "lucide-react";
+import { MapPin, Cpu, Heart, MessageCircle, Users, TrendingUp } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { cn } from "../lib/utils";
 
@@ -17,6 +17,12 @@ type Caso = {
   recurso_local: string;
   solucao: string;
   evidencia: string;
+  // Social network features
+  contribuicoes?: number;
+  votos?: number;
+  correcoes?: number;
+  autor?: string;
+  tempo_publicacao?: string;
 };
 
 const CORES_CATEGORIA: Record<string, string> = {
@@ -117,6 +123,45 @@ export function CardCaso({ caso, index = 0 }: { caso: Caso; index?: number }) {
               <MapPin size={12} />
               {caso.uf}
             </p>
+
+            {/* Social Network Stats */}
+            {(caso.contribuicoes || caso.votos || caso.correcoes) && (
+              <div className="flex items-center gap-4 mt-3 pt-3 border-t border-elfo-dourado/10">
+                {caso.contribuicoes && (
+                  <div className="flex items-center gap-1 text-xs text-elfo-cinza">
+                    <Users size={12} className="text-elfo-verde-vivo" />
+                    <span>{caso.contribuicoes} contribuições</span>
+                  </div>
+                )}
+                {caso.votos && (
+                  <div className="flex items-center gap-1 text-xs text-elfo-cinza">
+                    <Heart size={12} className="text-red-400" />
+                    <span>{caso.votos} votos</span>
+                  </div>
+                )}
+                {caso.correcoes && (
+                  <div className="flex items-center gap-1 text-xs text-elfo-cinza">
+                    <TrendingUp size={12} className="text-blue-400" />
+                    <span>{caso.correcoes} correções</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Author info */}
+            {caso.autor && (
+              <div className="flex items-center gap-2 mt-3">
+                <div className="w-6 h-6 rounded-full bg-elfo-verde-vivo flex items-center justify-center text-xs font-bold text-elfo-verde-escuro">
+                  {caso.autor.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-xs text-elfo-cinza">
+                  {caso.autor}
+                  {caso.tempo_publicacao && (
+                    <span className="ml-1 opacity-60">• {caso.tempo_publicacao}</span>
+                  )}
+                </span>
+              </div>
+            )}
           </div>
         </motion.article>
       </Link>

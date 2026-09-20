@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { Leaf, RotateCcw } from "lucide-react";
+import { Leaf, RotateCcw, X, History, ChevronLeft, ChevronRight } from "lucide-react";
 import { useChatHistory, getSessionId } from "../../lib/chat/useChatHistory";
 import type { ChatMessage, SavedItem, SourceRef } from "../../lib/chat/types";
 import { MessageList } from "./MessageList";
@@ -19,6 +19,8 @@ export function ChatInterface() {
   const { messages, setMessages, clear, hydrated } = useChatHistory();
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showContext, setShowContext] = useState(true);
   const abortRef = useRef<AbortController | null>(null);
   const scrollTargets = useRef<Record<string, HTMLElement | null>>({});
 
@@ -301,15 +303,68 @@ export function ChatInterface() {
               </p>
             </div>
           </div>
-          <button
-            onClick={clear}
-            aria-label="Start new conversation"
-            className="flex items-center gap-1.5 rounded-full border border-elfo-verde-escuro/15 px-3 py-1.5 text-xs font-medium text-elfo-verde-escuro transition-transform hover:scale-[1.02] hover:bg-elfo-verde-escuro/5"
-          >
-            <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
-            New conversation
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              aria-label="Toggle conversation history"
+              className="flex items-center gap-1.5 rounded-full border border-elfo-verde-escuro/15 px-3 py-1.5 text-xs font-medium text-elfo-verde-escuro transition-transform hover:scale-[1.02] hover:bg-elfo-verde-escuro/5"
+            >
+              <History className="h-3.5 w-3.5" aria-hidden="true" />
+              History
+            </button>
+            <button
+              onClick={clear}
+              aria-label="Start new conversation"
+              className="flex items-center gap-1.5 rounded-full border border-elfo-verde-escuro/15 px-3 py-1.5 text-xs font-medium text-elfo-verde-escuro transition-transform hover:scale-[1.02] hover:bg-elfo-verde-escuro/5"
+            >
+              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+              New
+            </button>
+          </div>
         </header>
+
+        {/* History Panel */}
+        {showHistory && (
+          <div className="border-b border-elfo-verde-escuro/10 bg-white/50 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-elfo-verde-escuro">Conversation History</h3>
+              <button
+                onClick={() => setShowHistory(false)}
+                className="p-1 rounded hover:bg-elfo-verde-escuro/10"
+              >
+                <X size={16} className="text-elfo-verde-escuro" />
+              </button>
+            </div>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {messages.length === 0 ? (
+                <p className="text-xs text-elfo-cinza">No conversations yet</p>
+              ) : (
+                messages.map((msg, idx) => (
+                  <button
+                    key={msg.id}
+                    onClick={() => {
+                      setShowHistory(false);
+                      // Scroll to this message
+                      scrollTargets.current[msg.id]?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                    }}
+                    className="w-full text-left p-2 rounded hover:bg-elfo-verde-escuro/5 transition-colors"
+                  >
+                    <p className="text-xs font-medium text-elfo-verde-escuro truncate">
+                      {msg.role === "user" ? "You: " : "Assistant: "}
+                      {msg.content.slice(0, 50)}...
+                    </p>
+                    <p className="text-xs text-elfo-cinza mt-1">
+                      {new Date(msg.createdAt).toLocaleTimeString()}
+                    </p>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="min-h-0 flex-1">
           <MessageList
@@ -326,12 +381,30 @@ export function ChatInterface() {
         />
       </div>
 
+      {/* Context Panel with Toggle */}
       <div className="hidden min-h-0 md:block">
-        <ContextPanel
-          messages={messages}
-          savedItems={savedItems}
-          onJumpTo={handleJumpTo}
-        />
+        <div className="h-full flex flex-col">
+          <button
+            onClick={() => setShowContext(!showContext)}
+            className="flex items-center justify-between border-b border-elfo-verde-escuro/10 bg-white/70 px-5 py-3.5 backdrop-blur-sm hover:bg-white/80 transition-colors"
+          >
+            <span className="text-sm font-medium text-elfo-verde-escuro">Context & Library</span>
+            {showContext ? (
+              <ChevronRight size={16} className="text-elfo-verde-escuro" />
+            ) : (
+              <ChevronLeft size={16} className="text-elfo-verde-escuro" />
+            )}
+          </button>
+          {showContext && (
+            <div className="flex-1 min-h-0">
+              <ContextPanel
+                messages={messages}
+                savedItems={savedItems}
+                onJumpTo={handleJumpTo}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       <details className="border-t border-elfo-verde-escuro/10 bg-white md:hidden">

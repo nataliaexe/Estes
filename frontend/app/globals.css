@@ -136,3 +136,72 @@ img, video, canvas {
   max-width: 100%;
   height: auto;
 }
+
+/* ============================================================
+   DARK CINEMATIC THEME — para o Hero e seções principais
+   ============================================================ */
+
+@theme {
+  --color-dark-bg: #06140a;
+  --color-dark-bg-2: #0a1f12;
+  --color-dark-surface: #0f2a1a;
+  --color-dark-border: rgba(75, 249, 141, 0.15);
+  --color-dark-text: #e8f4ec;
+  --color-dark-text-muted: rgba(232, 244, 236, 0.65);
+  --color-glow-green: #4bf98d;
+  --color-glow-violet: #c26bfa;
+  --color-glow-gold: #a68a42;
+}
+
+.dark-cinema {
+  background: radial-gradient(
+    ellipse at top,
+    #0f2a1a 0%,
+    #06140a 50%,
+    #030a05 100%
+  );
+  color: #e8f4ec;
+}
+
+.dark-cinema h1,
+.dark-cinema h2,
+.dark-cinema h3 {
+  color: #e8f4ec;
+}
+
+/* Texto gradiente premium */
+.text-glow-green {
+  background: linear-gradient(135deg, #4bf98d 0%, #a8ffcf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-glow-mixed {
+  background: linear-gradient(135deg, #4bf98d 0%, #c26bfa 50%, #a68a42 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow radial para botões */
+.btn-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #4bf98d, #c26bfa);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
+  filter: blur(12px);
+}
+
+.btn-glow:hover::before {
+  opacity: 0.6;
+}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, Leaf, LogOut, User as UserIcon } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAuth } from "../../contextos/AuthContext";
@@ -17,6 +17,18 @@ const links = [
 ];
 
 export function Navbar() {
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      // Esconde se estiver nos primeiros 300vh (dentro da story)
+      const inStory = window.scrollY < window.innerHeight * 3;
+      setHidden(inStory);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const pathname = usePathname();
   const router = useRouter();
   const { usuario, sair } = useAuth();
@@ -28,7 +40,11 @@ export function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-elfo-verde-escuro/95 backdrop-blur-md border-b border-elfo-dourado/20">
+    <nav
+      className={`sticky top-0 z-50 bg-elfo-verde-escuro/95 backdrop-blur-md border-b border-elfo-dourado/20 transition-all duration-500 ${
+        hidden ? "-translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
