@@ -26,7 +26,7 @@ interface StoryScrollProps {
  *   - Efeitos de partículas e blur
  *   - Narrativa imersiva
  */
-export function StoryScroll({ onComplete, manualMode = true }: StoryScrollProps) {
+export function StoryScroll({ onComplete, manualMode = false }: StoryScrollProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentStage, setCurrentStage] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -98,7 +98,7 @@ export function StoryScroll({ onComplete, manualMode = true }: StoryScrollProps)
 
   // Auto-play se usuário não interagiu
   useEffect(() => {
-    if (!manualMode || !isPlaying || hasInteracted) return;
+    if (!isPlaying || hasInteracted) return;
 
     const interval = setInterval(() => {
       if (currentStage < totalStages - 1) {
@@ -109,7 +109,7 @@ export function StoryScroll({ onComplete, manualMode = true }: StoryScrollProps)
     }, 5000); // 5 segundos por frame
 
     return () => clearInterval(interval);
-  }, [manualMode, isPlaying, hasInteracted, currentStage, totalStages, nextStage]);
+  }, [isPlaying, hasInteracted, currentStage, totalStages, nextStage]);
 
   // Detectar se é vídeo
   const isVideo = (src: string) => {
