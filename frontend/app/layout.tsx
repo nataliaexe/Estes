@@ -22,20 +22,20 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Estes — Soluções que nascem da raiz",
-    template: "%s · Estes",
+    default: "ESTES — Environmental Intelligence Platform",
+    template: "%s · ESTES",
   },
   description:
-    "Plataforma de cidadania ambiental que transforma resíduos locais em soluções urgentes e garante direitos humanos por meio de evidência científica aberta.",
+    "Open-source environmental intelligence and research platform connecting local environmental problems, scientific evidence, materials, and candidate solutions with traceable sources.",
   keywords: [
-    "ambiente",
-    "sustentabilidade",
-    "indígenas",
-    "direitos humanos",
-    "ciência aberta",
-    "Brasil",
+    "environmental intelligence",
+    "scientific research",
+    "environmental monitoring",
+    "evidence-based solutions",
+    "open science",
+    "Brazil",
   ],
-  authors: [{ name: "Natalia" }],
+  authors: [{ name: "ESTES Team" }],
 };
 
 export default function RootLayout({
@@ -57,9 +57,9 @@ export default function RootLayout({
           position="top-right"
           toastOptions={{
             style: {
-              background: "#114224",
+              background: "#263C30",
               color: "#EAE5D8",
-              border: "1px solid rgba(166, 138, 66, 0.3)",
+              border: "1px solid rgba(167, 201, 160, 0.3)",
             },
           }}
         />

@@ -14,28 +14,28 @@ async function getCasos() {
 }
 
 export const metadata = {
-  title: "Atlas Brasileiro - Rede Social",
+  title: "Environmental Atlas - ESTES",
   description:
-    "Comunidade de soluções ambientais postadas por cidadãos de todo o Brasil.",
+    "Explore documented environmental problems, cases, regions, indicators, and available geospatial data.",
 };
 
 export default async function AtlasPage() {
   const casos = await getCasos();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-elfo-verde-escuro to-black text-elfo-off-white">
+    <div className="min-h-screen bg-gradient-to-b from-bg-primary to-bg-secondary text-text-primary">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <header className="mb-10">
-          <p className="text-xs uppercase tracking-widest text-elfo-dourado font-bold mb-3">
-            Atlas Brasileiro
+          <p className="text-xs uppercase tracking-widest text-accent-secondary font-bold mb-3">
+            Environmental Atlas
           </p>
-          <h1 className="font-display font-black text-4xl md:text-5xl text-elfo-verde-escuro mb-4">
-            {casos.length} casos postados pela comunidade
+          <h1 className="font-display font-black text-4xl md:text-5xl text-text-primary mb-4">
+            {casos.length} Investigated Cases
           </h1>
-          <p className="text-lg text-elfo-cinza max-w-3xl">
-            Uma rede social de soluções ambientais. Cada caso transforma um 
-            recurso local em uma resposta para um problema ambiental concreto. 
-            Contribua, vote e corrixa soluções validadas pela comunidade.
+          <p className="text-lg text-text-secondary max-w-3xl">
+            Documented environmental problems with local materials, scientific
+            evidence, and proposed solutions. Each case connects real problems
+            to traceable sources and research lines.
           </p>
         </header>
 

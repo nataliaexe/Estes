@@ -53,10 +53,10 @@ export function FiltrosAtlas({ casos }: { casos: Caso[] }) {
         {/* Busca */}
         <input
           type="text"
-          placeholder="Buscar por material, problema ou título..."
+          placeholder="Search by material, problem, or title..."
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
-          className="w-full max-w-xl px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-elfo-verde-vivo/50 text-sm"
+          className="w-full max-w-xl px-4 py-3 rounded-xl border border-border bg-bg-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 text-sm text-text-primary placeholder:text-text-muted"
         />
 
         {/* Chips de categoria */}
@@ -68,8 +68,8 @@ export function FiltrosAtlas({ casos }: { casos: Caso[] }) {
               className={cn(
                 "px-4 py-2 rounded-full text-sm font-medium transition-all",
                 categoriaAtiva === cat.id
-                  ? "bg-elfo-verde-escuro text-elfo-off-white shadow-md"
-                  : "bg-white text-elfo-cinza border border-elfo-dourado/20 hover:border-elfo-verde-escuro/40"
+                  ? "bg-accent-primary text-bg-primary shadow-md"
+                  : "bg-bg-tertiary text-text-secondary border border-border hover:border-accent-primary/40"
               )}
             >
               {cat.label}
@@ -79,10 +79,9 @@ export function FiltrosAtlas({ casos }: { casos: Caso[] }) {
       </div>
 
       {/* Contador */}
-      <p className="text-sm text-elfo-cinza mb-6">
+      <p className="text-sm text-text-secondary mb-6">
         {casosFiltrados.length}{" "}
-        {casosFiltrados.length === 1 ? "caso" : "casos"} encontrado
-        {casosFiltrados.length === 1 ? "" : "s"}
+        {casosFiltrados.length === 1 ? "case" : "cases"} found
       </p>
 
       {/* Grid com ChromaGrid */}
@@ -97,8 +96,8 @@ export function FiltrosAtlas({ casos }: { casos: Caso[] }) {
       {/* Vazio */}
       {casosFiltrados.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-elfo-cinza">
-            Nenhum caso encontrado com esses filtros.
+          <p className="text-text-secondary">
+            No cases found with these filters.
           </p>
         </div>
       )}

@@ -64,7 +64,7 @@ export function CardCaso({ caso, index = 0 }: { caso: Caso; index?: number }) {
         <motion.article
           whileHover={{ y: -4 }}
           transition={{ duration: 0.2 }}
-          className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-2xl transition-all duration-300 border border-elfo-dourado/10 overflow-hidden h-full flex flex-col"
+          className="group relative bg-bg-tertiary rounded-2xl p-6 shadow-sm hover:shadow-2xl transition-all duration-300 border border-border overflow-hidden h-full flex flex-col"
           style={{
             boxShadow: `0 4px 20px rgba(0,0,0,0.04)`,
           }}
@@ -102,47 +102,47 @@ export function CardCaso({ caso, index = 0 }: { caso: Caso; index?: number }) {
           </div>
 
           {/* Título */}
-          <h3 className="relative font-display font-bold text-lg text-elfo-verde-escuro mb-3 leading-snug group-hover:text-elfo-verde-vivo transition-colors">
+          <h3 className="relative font-display font-bold text-lg text-text-primary mb-3 leading-snug group-hover:text-accent-primary transition-colors">
             #{caso.numero} — {caso.titulo}
           </h3>
 
           {/* Problema */}
-          <p className="relative text-sm text-elfo-cinza line-clamp-3 mb-4 flex-1">
+          <p className="relative text-sm text-text-secondary line-clamp-3 mb-4 flex-1">
             {caso.problema}
           </p>
 
           {/* Recurso */}
-          <div className="relative border-t border-elfo-dourado/20 pt-4 mt-auto">
-            <p className="text-xs text-elfo-cinza">
-              <span className="font-semibold text-elfo-verde-escuro">
-                Recurso:{" "}
+          <div className="relative border-t border-border pt-4 mt-auto">
+            <p className="text-xs text-text-secondary">
+              <span className="font-semibold text-text-primary">
+                Resource:{" "}
               </span>
               {caso.recurso_local}
             </p>
-            <p className="text-xs text-elfo-cinza mt-1 flex items-center gap-1">
+            <p className="text-xs text-text-secondary mt-1 flex items-center gap-1">
               <MapPin size={12} />
               {caso.uf}
             </p>
 
             {/* Social Network Stats */}
             {(caso.contribuicoes || caso.votos || caso.correcoes) && (
-              <div className="flex items-center gap-4 mt-3 pt-3 border-t border-elfo-dourado/10">
+              <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border">
                 {caso.contribuicoes && (
-                  <div className="flex items-center gap-1 text-xs text-elfo-cinza">
-                    <Users size={12} className="text-elfo-verde-vivo" />
-                    <span>{caso.contribuicoes} contribuições</span>
+                  <div className="flex items-center gap-1 text-xs text-text-secondary">
+                    <Users size={12} className="text-accent-primary" />
+                    <span>{caso.contribuicoes} contributions</span>
                   </div>
                 )}
                 {caso.votos && (
-                  <div className="flex items-center gap-1 text-xs text-elfo-cinza">
+                  <div className="flex items-center gap-1 text-xs text-text-secondary">
                     <Heart size={12} className="text-red-400" />
-                    <span>{caso.votos} votos</span>
+                    <span>{caso.votos} votes</span>
                   </div>
                 )}
                 {caso.correcoes && (
-                  <div className="flex items-center gap-1 text-xs text-elfo-cinza">
+                  <div className="flex items-center gap-1 text-xs text-text-secondary">
                     <TrendingUp size={12} className="text-blue-400" />
-                    <span>{caso.correcoes} correções</span>
+                    <span>{caso.correcoes} corrections</span>
                   </div>
                 )}
               </div>
@@ -151,10 +151,10 @@ export function CardCaso({ caso, index = 0 }: { caso: Caso; index?: number }) {
             {/* Author info */}
             {caso.autor && (
               <div className="flex items-center gap-2 mt-3">
-                <div className="w-6 h-6 rounded-full bg-elfo-verde-vivo flex items-center justify-center text-xs font-bold text-elfo-verde-escuro">
+                <div className="w-6 h-6 rounded-full bg-accent-primary flex items-center justify-center text-xs font-bold text-bg-primary">
                   {caso.autor.charAt(0).toUpperCase()}
                 </div>
-                <span className="text-xs text-elfo-cinza">
+                <span className="text-xs text-text-secondary">
                   {caso.autor}
                   {caso.tempo_publicacao && (
                     <span className="ml-1 opacity-60">• {caso.tempo_publicacao}</span>

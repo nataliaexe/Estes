@@ -41,11 +41,25 @@ export async function generateMetadata({
 }
 
 const NIVEL_CORES: Record<string, string> = {
-  demonstrado: "bg-green-100 text-green-800 border-green-300",
-  suportado: "bg-yellow-100 text-yellow-800 border-yellow-300",
-  modelado: "bg-orange-100 text-orange-800 border-orange-300",
-  hipotese: "bg-blue-100 text-blue-800 border-blue-300",
+  hypothesis: "bg-gray-100 text-gray-800 border-gray-300",
+  supported: "bg-yellow-100 text-yellow-800 border-yellow-300",
+  simulated: "bg-orange-100 text-orange-800 border-orange-300",
+  prototype: "bg-blue-100 text-blue-800 border-blue-300",
+  "experimentally-evaluated": "bg-green-100 text-green-800 border-green-300",
+  "independently-validated": "bg-emerald-100 text-emerald-800 border-emerald-300",
 };
+
+// Map Portuguese evidence levels to English
+const EVIDENCE_MAP: Record<string, string> = {
+  hipotese: "hypothesis",
+  suportado: "supported",
+  modelado: "simulated",
+  demonstrado: "experimentally-evaluated",
+};
+
+function normalizeEvidence(evidencia: string): string {
+  return EVIDENCE_MAP[evidencia] || evidencia;
+}
 
 export default async function CasoPage({
   params,
@@ -55,6 +69,8 @@ export default async function CasoPage({
   const { numero } = await params;
   const caso = await getCaso(numero);
   if (!caso) notFound();
+
+  const normalizedEvidence = normalizeEvidence(caso.evidencia);
 
   const niveis = [
     {
@@ -81,68 +97,68 @@ export default async function CasoPage({
   ];
 
   return (
-    <div className="min-h-screen bg-elfo-creme">
+    <div className="min-h-screen bg-bg-primary">
       <div className="max-w-5xl mx-auto px-6 py-12">
         {/* Voltar */}
         <Link
           href="/atlas"
-          className="inline-flex items-center gap-2 text-sm text-elfo-verde-escuro hover:text-elfo-verde-vivo mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-text-primary hover:text-accent-primary mb-8 transition-colors"
         >
           <ArrowLeft size={16} />
-          Voltar ao Atlas
+          Back to Atlas
         </Link>
 
         {/* HEADER */}
-        <header className="bg-white rounded-3xl p-8 md:p-12 shadow-sm mb-8 border border-elfo-dourado/10">
+        <header className="bg-bg-tertiary rounded-3xl p-8 md:p-12 shadow-sm mb-8 border border-border">
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <Badge variant={caso.categoria as any}>{caso.categoria}</Badge>
             <Badge variant="default">{caso.tipo_solucao}</Badge>
             <span
               className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold border ${
-                NIVEL_CORES[caso.evidencia] ||
+                NIVEL_CORES[normalizedEvidence] ||
                 "bg-gray-100 text-gray-700 border-gray-300"
               }`}
             >
-              {caso.evidencia}
+              {normalizedEvidence}
             </span>
             {caso.precisa_hardware && (
               <Badge variant="verde" className="gap-1">
-                <Cpu size={12} /> precisa hardware
+                <Cpu size={12} /> hardware required
               </Badge>
             )}
           </div>
 
-          <h1 className="font-display font-black text-3xl md:text-5xl text-elfo-verde-escuro mb-4 leading-tight">
+          <h1 className="font-display font-black text-3xl md:text-5xl text-text-primary mb-4 leading-tight">
             #{caso.numero} — {caso.titulo}
           </h1>
 
-          <p className="text-sm text-elfo-cinza flex items-center gap-2 mb-6">
+          <p className="text-sm text-text-secondary flex items-center gap-2 mb-6">
             <MapPin size={14} />
             {caso.uf}
           </p>
 
-          <div className="grid md:grid-cols-3 gap-6 pt-6 border-t border-elfo-dourado/20">
+          <div className="grid md:grid-cols-3 gap-6 pt-6 border-t border-border">
             <div>
-              <p className="text-xs uppercase tracking-wider text-elfo-dourado font-bold mb-1">
-                Problema
+              <p className="text-xs uppercase tracking-wider text-accent-secondary font-bold mb-1">
+                Problem
               </p>
-              <p className="text-sm text-elfo-cinza leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 {caso.problema}
               </p>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wider text-elfo-dourado font-bold mb-1">
-                Recurso local
+              <p className="text-xs uppercase tracking-wider text-accent-secondary font-bold mb-1">
+                Local Resource
               </p>
-              <p className="text-sm text-elfo-cinza leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 {caso.recurso_local}
               </p>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wider text-elfo-dourado font-bold mb-1">
-                Solução
+              <p className="text-xs uppercase tracking-wider text-accent-secondary font-bold mb-1">
+                Solution
               </p>
-              <p className="text-sm text-elfo-cinza leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 {caso.solucao}
               </p>
             </div>
@@ -151,32 +167,32 @@ export default async function CasoPage({
 
         {/* HISTÓRIA */}
         {caso.historia && (
-          <section className="bg-white rounded-3xl p-8 md:p-12 shadow-sm mb-8 border-l-4 border-elfo-verde-vivo">
+          <section className="bg-bg-tertiary rounded-3xl p-8 md:p-12 shadow-sm mb-8 border-l-4 border-accent-primary">
             <div className="flex items-center gap-3 mb-6">
-              <BookOpen className="text-elfo-verde-vivo" size={24} />
-              <h2 className="font-display font-bold text-2xl text-elfo-verde-escuro">
-                A história
+              <BookOpen className="text-accent-primary" size={24} />
+              <h2 className="font-display font-bold text-2xl text-text-primary">
+                The Story
               </h2>
             </div>
-            <p className="text-lg text-elfo-cinza leading-relaxed whitespace-pre-line">
+            <p className="text-lg text-text-secondary leading-relaxed whitespace-pre-line">
               {caso.historia}
             </p>
 
             {caso.fontes_historicas && caso.fontes_historicas.length > 0 && (
-              <div className="mt-8 pt-6 border-t border-elfo-dourado/20">
-                <p className="text-xs uppercase tracking-wider text-elfo-dourado font-bold mb-3">
-                  Fontes
+              <div className="mt-8 pt-6 border-t border-border">
+                <p className="text-xs uppercase tracking-wider text-accent-secondary font-bold mb-3">
+                  Sources
                 </p>
                 <ul className="space-y-2">
                   {caso.fontes_historicas.map((f: any, i: number) => (
-                    <li key={i} className="text-sm text-elfo-cinza flex items-start gap-2">
-                      <FileText size={14} className="mt-1 flex-shrink-0 text-elfo-dourado" />
+                    <li key={i} className="text-sm text-text-secondary flex items-start gap-2">
+                      <FileText size={14} className="mt-1 flex-shrink-0 text-accent-secondary" />
                       {f.url ? (
                         <a
                           href={f.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-elfo-verde-escuro underline hover:text-elfo-verde-vivo"
+                          className="text-text-primary underline hover:text-accent-primary"
                         >
                           {f.titulo || f.veiculo || f.orgao} ({f.ano || f.data})
                         </a>
@@ -195,34 +211,34 @@ export default async function CasoPage({
 
         {/* 3 NÍVEIS */}
         <section className="mb-8">
-          <h2 className="font-display font-bold text-2xl text-elfo-verde-escuro mb-6">
-            Como fazer — 3 níveis
+          <h2 className="font-display font-bold text-2xl text-text-primary mb-6">
+            Implementation — 3 Levels
           </h2>
           <div className="grid md:grid-cols-3 gap-4">
             {niveis.map((n) => (
               <div
                 key={n.num}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-elfo-dourado/10 flex flex-col"
+                className="bg-bg-tertiary rounded-2xl p-6 shadow-sm border border-border flex flex-col"
                 style={{ borderTop: `4px solid ${n.cor}` }}
               >
-                <h3 className="font-display font-bold text-lg text-elfo-verde-escuro mb-1">
+                <h3 className="font-display font-bold text-lg text-text-primary mb-1">
                   {n.titulo}
                 </h3>
-                <p className="text-xs text-elfo-cinza mb-4">{n.descricao}</p>
+                <p className="text-xs text-text-secondary mb-4">{n.descricao}</p>
 
                 {n.dados?.tempo && (
-                  <p className="text-xs text-elfo-cinza flex items-center gap-1 mb-1">
+                  <p className="text-xs text-text-secondary flex items-center gap-1 mb-1">
                     <Clock size={12} /> {n.dados.tempo}
                   </p>
                 )}
                 {n.dados?.custo && (
-                  <p className="text-xs text-elfo-cinza flex items-center gap-1 mb-4">
+                  <p className="text-xs text-text-secondary flex items-center gap-1 mb-4">
                     <DollarSign size={12} /> {n.dados.custo}
                   </p>
                 )}
 
                 {n.dados?.passos && (
-                  <ol className="text-xs text-elfo-cinza space-y-2 list-decimal list-inside flex-1">
+                  <ol className="text-xs text-text-secondary space-y-2 list-decimal list-inside flex-1">
                     {n.dados.passos.slice(0, 8).map((p: string, i: number) => (
                       <li key={i} className="leading-relaxed">
                         {p}
@@ -237,24 +253,24 @@ export default async function CasoPage({
 
         {/* EVIDÊNCIA CIENTÍFICA */}
         {caso.evidencias && caso.evidencias.length > 0 && (
-          <section className="bg-white rounded-2xl p-8 shadow-sm mb-8">
+          <section className="bg-bg-tertiary rounded-2xl p-8 shadow-sm mb-8">
             <div className="flex items-center gap-3 mb-6">
-              <Beaker className="text-elfo-verde-escuro" size={22} />
-              <h2 className="font-display font-bold text-xl text-elfo-verde-escuro">
-                Evidência científica
+              <Beaker className="text-text-primary" size={22} />
+              <h2 className="font-display font-bold text-xl text-text-primary">
+                Scientific Evidence
               </h2>
             </div>
             <div className="space-y-4">
               {caso.evidencias.map((e: any, i: number) => (
                 <div
                   key={i}
-                  className="border-l-4 border-elfo-dourado pl-4 py-2"
+                  className="border-l-4 border-accent-secondary pl-4 py-2"
                 >
-                  <p className="font-semibold text-sm text-elfo-verde-escuro mb-1">
+                  <p className="font-semibold text-sm text-text-primary mb-1">
                     {e.claim || e.titulo}
                   </p>
                   {e.trecho && (
-                    <p className="text-xs text-elfo-cinza italic mb-2">
+                    <p className="text-xs text-text-secondary italic mb-2">
                       "{e.trecho}"
                     </p>
                   )}
@@ -262,7 +278,7 @@ export default async function CasoPage({
                     <a
                       href={`https://doi.org/${e.doi}`}
                       target="_blank"
-                      className="text-xs text-elfo-verde-escuro underline"
+                      className="text-xs text-text-primary underline"
                     >
                       DOI: {e.doi}
                     </a>
@@ -279,7 +295,7 @@ export default async function CasoPage({
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="text-amber-600" size={20} />
               <h3 className="font-display font-bold text-amber-900">
-                Limitações conhecidas
+                Known Limitations
               </h3>
             </div>
             <ul className="text-sm text-amber-800 space-y-1 list-disc list-inside">
@@ -290,16 +306,68 @@ export default async function CasoPage({
           </section>
         )}
 
+        {/* INVESTIGATION WORKFLOW */}
+        <section className="bg-bg-tertiary rounded-2xl p-8 shadow-sm mb-8 border border-border">
+          <h2 className="font-display font-bold text-2xl text-text-primary mb-6">
+            Investigation Workflow
+          </h2>
+          <div className="space-y-6">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-primary flex items-center justify-center text-text-primary font-bold">
+                1
+              </div>
+              <div>
+                <h3 className="font-semibold text-text-primary mb-1">Problem Identified</h3>
+                <p className="text-sm text-text-secondary">{caso.problema}</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-secondary flex items-center justify-center text-bg-primary font-bold">
+                2
+              </div>
+              <div>
+                <h3 className="font-semibold text-text-primary mb-1">Local Resource Mapped</h3>
+                <p className="text-sm text-text-secondary">{caso.recurso_local}</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-primary flex items-center justify-center text-text-primary font-bold">
+                3
+              </div>
+              <div>
+                <h3 className="font-semibold text-text-primary mb-1">Evidence Collected</h3>
+                <p className="text-sm text-text-secondary">
+                  Evidence level: <span className="font-semibold">{normalizedEvidence}</span>
+                </p>
+                {caso.referencias && caso.referencias.length > 0 && (
+                  <p className="text-xs text-text-muted mt-1">
+                    {caso.referencias.length} scientific references
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-secondary flex items-center justify-center text-bg-primary font-bold">
+                4
+              </div>
+              <div>
+                <h3 className="font-semibold text-text-primary mb-1">Solution Proposed</h3>
+                <p className="text-sm text-text-secondary">{caso.solucao}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA CONTRIBUIR */}
         <div className="text-center py-8">
-          <p className="text-elfo-cinza mb-4">
-            Você conhece esse problema na sua região?
+          <p className="text-text-secondary mb-4">
+            Do you know this problem in your region?
           </p>
           <Link
             href="/contribuir"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-elfo-verde-escuro text-elfo-off-white rounded-xl font-semibold hover:bg-elfo-verde-vivo hover:text-elfo-verde-escuro transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-accent-primary text-bg-primary rounded-xl font-semibold hover:bg-accent-secondary transition-all"
           >
-            Contribuir com conhecimento
+            Contribute Knowledge
           </Link>
         </div>
       </div>

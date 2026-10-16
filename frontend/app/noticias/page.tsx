@@ -55,19 +55,19 @@ const noticias = [
 
 export default function NoticiasPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-elfo-verde-escuro to-black text-elfo-off-white">
+    <div className="min-h-screen bg-gradient-to-b from-bg-primary to-bg-secondary text-text-primary">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <ScrollReveal>
           <div className="mb-12">
-            <p className="text-xs uppercase tracking-[0.3em] text-elfo-dourado font-bold mb-4">
-              Notícias
+            <p className="text-xs uppercase tracking-[0.3em] text-accent-secondary font-bold mb-4">
+              News
             </p>
             <h1 className="font-display font-black text-4xl md:text-5xl mb-4">
-              Histórias que precisam ser contadas
+              Stories that need to be told
             </h1>
-            <p className="text-lg text-elfo-off-white/70 max-w-3xl">
-              Acompanhe as últimas notícias sobre crises ambientais, comunidades 
-              afetadas e soluções que estão sendo desenvolvidas.
+            <p className="text-lg text-text-secondary max-w-3xl">
+              Follow the latest news on environmental crises, affected
+              communities, and solutions being developed.
             </p>
           </div>
         </ScrollReveal>
@@ -76,29 +76,29 @@ export default function NoticiasPage() {
           {noticias.map((noticia, index) => (
             <ScrollReveal key={noticia.id} delay={index * 0.1}>
               <Link href={`/noticias/${noticia.id}`}>
-                <article className="group bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-elfo-verde-vivo/30 transition-all duration-300">
-                  <div className="aspect-video bg-gradient-to-br from-elfo-verde-escuro to-elfo-verde-vivo relative overflow-hidden">
-                    <div 
+                <article className="group bg-bg-tertiary backdrop-blur-sm rounded-2xl overflow-hidden border border-border hover:border-accent-primary/30 transition-all duration-300">
+                  <div className="aspect-video bg-gradient-to-br from-bg-secondary to-accent-primary relative overflow-hidden">
+                    <div
                       className="absolute inset-0 bg-cover bg-center"
                       style={{ backgroundImage: `url(${noticia.imagem})` }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <div className="absolute bottom-4 left-4 right-4">
-                      <span className="inline-block px-3 py-1 bg-elfo-verde-vivo/20 text-elfo-verde-vivo text-xs font-semibold rounded-full mb-2">
+                      <span className="inline-block px-3 py-1 bg-accent-primary/20 text-accent-primary text-xs font-semibold rounded-full mb-2">
                         {noticia.categoria}
                       </span>
                     </div>
                   </div>
 
                   <div className="p-6">
-                    <h2 className="font-display font-bold text-xl mb-3 group-hover:text-elfo-verde-vivo transition-colors">
+                    <h2 className="font-display font-bold text-xl mb-3 group-hover:text-accent-primary transition-colors">
                       {noticia.titulo}
                     </h2>
-                    <p className="text-elfo-off-white/70 mb-4 line-clamp-2">
+                    <p className="text-text-secondary mb-4 line-clamp-2">
                       {noticia.resumo}
                     </p>
 
-                    <div className="flex items-center gap-4 text-xs text-elfo-off-white/50 mb-4">
+                    <div className="flex items-center gap-4 text-xs text-text-muted mb-4">
                       <div className="flex items-center gap-1">
                         <Calendar size={12} />
                         {noticia.data}
@@ -109,9 +109,9 @@ export default function NoticiasPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-end pt-4 border-t border-white/10">
-                      <div className="flex items-center gap-1 text-elfo-verde-vivo text-sm font-medium group-hover:translate-x-1 transition-transform">
-                        Ler mais
+                    <div className="flex items-center justify-end pt-4 border-t border-border">
+                      <div className="flex items-center gap-1 text-accent-primary text-sm font-medium group-hover:translate-x-1 transition-transform">
+                        Read more
                         <ArrowRight size={16} />
                       </div>
                     </div>
@@ -124,8 +124,8 @@ export default function NoticiasPage() {
 
         <ScrollReveal delay={0.5}>
           <div className="mt-12 text-center">
-            <p className="text-sm text-elfo-off-white/50 mb-4">
-              Fontes: G1, Fiocruz, Artigo19, Repórter Brasil, Global Witness, NASA FIRMS, INPE
+            <p className="text-sm text-text-muted mb-4">
+              Sources: G1, Fiocruz, Artigo19, Repórter Brasil, Global Witness, NASA FIRMS, INPE
             </p>
           </div>
         </ScrollReveal>

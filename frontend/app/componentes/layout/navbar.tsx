@@ -18,10 +18,12 @@ export function Navbar() {
   const links = [
     { href: "/", label: t.nav.home },
     { href: "/atlas", label: t.nav.atlas },
-    { href: "/noticias", label: t.nav.news },
+    { href: "/evidence", label: t.nav.evidence },
+    { href: "/laboratory", label: t.nav.laboratory },
+    { href: "/solutions", label: t.nav.solutions },
+    { href: "/data", label: t.nav.data },
     { href: "/explorar", label: t.nav.explore },
     { href: "/chat", label: t.nav.assistant },
-    { href: "/medir", label: t.nav.measure },
     { href: "/contribuir", label: t.nav.contribute },
   ];
 
@@ -31,25 +33,25 @@ export function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-elfo-verde-escuro/95 backdrop-blur-md border-b border-elfo-dourado/20">
+    <nav className="sticky top-0 z-50 bg-bg-primary/95 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
             <Leaf
-              className="w-7 h-7 text-elfo-verde-vivo transition-transform group-hover:scale-110"
+              className="w-7 h-7 text-accent-primary transition-transform group-hover:scale-110"
               strokeWidth={2.5}
             />
             <div className="flex flex-col leading-none">
-              <span className="text-xl font-display font-bold text-elfo-off-white tracking-tight">
-                Estes
+              <span className="text-xl font-display font-bold text-text-primary tracking-tight">
+                ESTES
               </span>
-              <span className="text-[10px] text-elfo-off-white/60 tracking-wider uppercase">
+              <span className="text-[10px] text-text-secondary tracking-wider uppercase">
                 {t.nav.tagline}
               </span>
             </div>
           </Link>
 
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1">
             {links.map((link) => {
               const ativo =
                 pathname === link.href ||
@@ -61,8 +63,8 @@ export function Navbar() {
                   className={cn(
                     "px-3 py-2 rounded-lg text-sm font-medium transition-all",
                     ativo
-                      ? "bg-elfo-verde-vivo/15 text-elfo-verde-vivo"
-                      : "text-elfo-off-white/80 hover:text-elfo-off-white hover:bg-elfo-off-white/5"
+                      ? "bg-accent-primary/10 text-accent-primary"
+                      : "text-text-secondary hover:text-text-primary hover:bg-text-primary/5"
                   )}
                 >
                   {link.label}
@@ -73,7 +75,7 @@ export function Navbar() {
             {/* Toggle idioma */}
             <button
               onClick={() => setLocale(locale === "pt" ? "en" : "pt")}
-              className="ml-2 px-2 py-1 rounded-lg text-xs font-bold text-elfo-off-white/70 hover:text-elfo-verde-vivo hover:bg-elfo-off-white/5 transition-all"
+              className="ml-2 px-2 py-1 rounded-lg text-xs font-bold text-text-secondary hover:text-accent-primary hover:bg-text-primary/5 transition-all"
               title={locale === "pt" ? "Switch to English" : "Mudar para Português"}
             >
               {locale.toUpperCase()}
@@ -83,14 +85,14 @@ export function Navbar() {
               <div className="ml-2 flex items-center gap-2">
                 <Link
                   href="/perfil"
-                  className="text-xs text-elfo-off-white/70 hover:text-elfo-verde-vivo flex items-center gap-1 transition-colors"
+                  className="text-xs text-text-secondary hover:text-accent-primary flex items-center gap-1 transition-colors"
                 >
                   <UserIcon size={14} />
                   {usuario.nome.split(" ")[0]}
                 </Link>
                 <button
                   onClick={handleSair}
-                  className="p-2 rounded-lg text-elfo-off-white/70 hover:text-elfo-off-white hover:bg-elfo-off-white/5 transition-all"
+                  className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-text-primary/5 transition-all"
                   title={t.nav.signOut}
                 >
                   <LogOut size={16} />
@@ -99,7 +101,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/entrar"
-                className="ml-2 px-4 py-2 rounded-lg text-sm font-semibold bg-elfo-verde-vivo text-elfo-verde-escuro hover:bg-elfo-verde-vivo/90 transition-all"
+                className="ml-2 px-4 py-2 rounded-lg text-sm font-semibold bg-accent-primary text-bg-primary hover:bg-accent-primary/90 transition-all"
               >
                 {t.nav.signIn}
               </Link>
@@ -107,7 +109,7 @@ export function Navbar() {
           </div>
 
           <button
-            className="md:hidden text-elfo-off-white p-2"
+            className="lg:hidden text-text-primary p-2"
             onClick={() => setAberto(!aberto)}
             aria-label="Menu"
           >
@@ -117,7 +119,7 @@ export function Navbar() {
       </div>
 
       {aberto && (
-        <div className="md:hidden bg-elfo-verde-escuro border-t border-elfo-dourado/20">
+        <div className="lg:hidden bg-bg-primary border-t border-border">
           <div className="px-4 py-3 space-y-1">
             {links.map((link) => (
               <Link
@@ -127,8 +129,8 @@ export function Navbar() {
                 className={cn(
                   "block px-4 py-2 rounded-lg text-sm font-medium",
                   pathname === link.href
-                    ? "bg-elfo-verde-vivo/15 text-elfo-verde-vivo"
-                    : "text-elfo-off-white/80"
+                    ? "bg-accent-primary/10 text-accent-primary"
+                    : "text-text-secondary"
                 )}
               >
                 {link.label}
@@ -139,7 +141,7 @@ export function Navbar() {
                 setLocale(locale === "pt" ? "en" : "pt");
                 setAberto(false);
               }}
-              className="block w-full text-left px-4 py-2 rounded-lg text-sm font-bold text-elfo-verde-vivo"
+              className="block w-full text-left px-4 py-2 rounded-lg text-sm font-bold text-accent-primary"
             >
               {locale === "pt" ? "Switch to English" : "Mudar para Português"}
             </button>
@@ -149,7 +151,7 @@ export function Navbar() {
                   handleSair();
                   setAberto(false);
                 }}
-                className="block w-full text-left px-4 py-2 rounded-lg text-sm font-medium text-elfo-off-white/80"
+                className="block w-full text-left px-4 py-2 rounded-lg text-sm font-medium text-text-secondary"
               >
                 {t.nav.signOut} ({usuario.nome.split(" ")[0]})
               </button>
@@ -157,7 +159,7 @@ export function Navbar() {
               <Link
                 href="/entrar"
                 onClick={() => setAberto(false)}
-                className="block px-4 py-2 rounded-lg text-sm font-semibold bg-elfo-verde-vivo text-elfo-verde-escuro text-center"
+                className="block px-4 py-2 rounded-lg text-sm font-semibold bg-accent-primary text-bg-primary text-center"
               >
                 {t.nav.signIn}
               </Link>

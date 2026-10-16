@@ -2,15 +2,17 @@ export const dict = {
   pt: {
     nav: {
       home: "Início",
-      atlas: "Atlas",
-      news: "Notícias",
-      explore: "Explorar",
-      assistant: "Assistente",
-      measure: "Medir",
+      atlas: "Atlas Ambiental",
+      evidence: "Explorador de Evidências",
+      laboratory: "Laboratório de Pesquisa",
+      solutions: "Explorador de Soluções",
+      data: "Dados Ambientais",
+      explore: "Explorar Material",
+      assistant: "Assistente IA",
       contribute: "Contribuir",
       signIn: "Entrar",
       signOut: "Sair",
-      tagline: "cidadania ambiental",
+      tagline: "inteligência ambiental",
     },
     home: {
       hero: {
@@ -73,15 +75,17 @@ export const dict = {
   en: {
     nav: {
       home: "Home",
-      atlas: "Atlas",
-      news: "News",
-      explore: "Explore",
-      assistant: "Assistant",
-      measure: "Measure",
+      atlas: "Environmental Atlas",
+      evidence: "Evidence Explorer",
+      laboratory: "Research Laboratory",
+      solutions: "Solution Explorer",
+      data: "Environmental Data",
+      explore: "Explore Material",
+      assistant: "AI Assistant",
       contribute: "Contribute",
       signIn: "Sign In",
       signOut: "Sign Out",
-      tagline: "environmental citizenship",
+      tagline: "environmental intelligence",
     },
     home: {
       hero: {

@@ -52,13 +52,13 @@ export default function ExplorarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-elfo-creme">
+    <div className="min-h-screen bg-bg-primary">
       <div className="max-w-5xl mx-auto px-6 py-12">
         <header className="mb-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ia-roxo-neon/10 text-ia-roxo-escuro text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-primary/10 text-text-primary text-sm font-medium mb-6"
           >
             <FlaskConical size={14} />
             <span>Scientific Engine</span>
@@ -68,7 +68,7 @@ export default function ExplorarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-display font-black text-4xl md:text-6xl text-elfo-verde-escuro mb-4"
+            className="font-display font-black text-4xl md:text-6xl text-text-primary mb-4"
           >
             Explore any material
           </motion.h1>
@@ -77,7 +77,7 @@ export default function ExplorarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-elfo-cinza max-w-2xl mx-auto"
+            className="text-lg text-text-secondary max-w-2xl mx-auto"
           >
             Tell us what local resource you have and what problem you want to
             solve. We search 250 million papers and generate reproducible
@@ -90,11 +90,11 @@ export default function ExplorarPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           onSubmit={explorar}
-          className="bg-white rounded-3xl shadow-lg p-8 border border-elfo-dourado/10"
+          className="bg-bg-tertiary rounded-3xl shadow-lg p-8 border border-border"
         >
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-2">
+              <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary mb-2">
                 What material do you have?
               </label>
               <input
@@ -102,11 +102,11 @@ export default function ExplorarPage() {
                 value={material}
                 onChange={(e) => setMaterial(e.target.value)}
                 placeholder="e.g., coffee husk"
-                className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-ia-roxo-neon/50 text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 text-sm text-text-primary placeholder:text-text-muted"
               />
             </div>
             <div>
-              <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-2">
+              <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary mb-2">
                 What problem to solve?
               </label>
               <input
@@ -114,13 +114,13 @@ export default function ExplorarPage() {
                 value={problema}
                 onChange={(e) => setProblema(e.target.value)}
                 placeholder="e.g., water contamination"
-                className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-ia-roxo-neon/50 text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 text-sm text-text-primary placeholder:text-text-muted"
               />
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2 mb-6">
-            <span className="text-xs text-elfo-cinza">Try:</span>
+            <span className="text-xs text-text-secondary">Try:</span>
             {EXEMPLOS.map((e, i) => (
               <button
                 key={i}
@@ -129,7 +129,7 @@ export default function ExplorarPage() {
                   setMaterial(e.material);
                   setProblema(e.problema);
                 }}
-                className="text-xs bg-elfo-creme hover:bg-ia-roxo-neon/10 px-3 py-1 rounded-full transition-all text-elfo-cinza hover:text-ia-roxo-escuro"
+                className="text-xs bg-bg-secondary hover:bg-accent-primary/10 px-3 py-1 rounded-full transition-all text-text-secondary hover:text-text-primary"
               >
                 {e.material}
               </button>
@@ -139,7 +139,7 @@ export default function ExplorarPage() {
           <button
             type="submit"
             disabled={carregando}
-            className="w-full py-4 rounded-xl font-display font-bold text-lg transition-all bg-gradient-to-r from-ia-roxo-neon to-ia-roxo-escuro text-white hover:shadow-xl disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-4 rounded-xl font-display font-bold text-lg transition-all bg-gradient-to-r from-accent-primary to-accent-secondary text-bg-primary hover:shadow-xl disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {carregando ? (
               <>
@@ -164,27 +164,27 @@ export default function ExplorarPage() {
             >
               {/* Resumo */}
               <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
-                  <div className="font-display font-black text-4xl text-ia-roxo-neon">
+                <div className="bg-bg-tertiary rounded-2xl p-6 text-center shadow-sm">
+                  <div className="font-display font-black text-4xl text-accent-primary">
                     {resultado.total_papers_encontrados}
                   </div>
-                  <div className="text-xs text-elfo-cinza uppercase tracking-wider mt-1">
+                  <div className="text-xs text-text-secondary uppercase tracking-wider mt-1">
                     papers found
                   </div>
                 </div>
-                <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
-                  <div className="font-display font-black text-4xl text-elfo-verde-vivo">
+                <div className="bg-bg-tertiary rounded-2xl p-6 text-center shadow-sm">
+                  <div className="font-display font-black text-4xl text-accent-secondary">
                     {resultado.total_evidencias}
                   </div>
-                  <div className="text-xs text-elfo-cinza uppercase tracking-wider mt-1">
+                  <div className="text-xs text-text-secondary uppercase tracking-wider mt-1">
                     applicable
                   </div>
                 </div>
-                <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
-                  <div className="font-display font-black text-4xl text-elfo-dourado">
+                <div className="bg-bg-tertiary rounded-2xl p-6 text-center shadow-sm">
+                  <div className="font-display font-black text-4xl text-accent-primary">
                     {resultado.caminhos_possiveis?.length || 0}
                   </div>
-                  <div className="text-xs text-elfo-cinza uppercase tracking-wider mt-1">
+                  <div className="text-xs text-text-secondary uppercase tracking-wider mt-1">
                     paths
                   </div>
                 </div>
@@ -192,9 +192,9 @@ export default function ExplorarPage() {
 
               {/* Evidencias */}
               {resultado.evidencias?.length > 0 && (
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <h2 className="font-display font-bold text-xl text-elfo-verde-escuro mb-4 flex items-center gap-2">
-                    <CheckCircle2 className="text-elfo-verde-vivo" size={20} />
+                <div className="bg-bg-tertiary rounded-2xl p-6 shadow-sm">
+                  <h2 className="font-display font-bold text-xl text-text-primary mb-4 flex items-center gap-2">
+                    <CheckCircle2 className="text-accent-primary" size={20} />
                     Scientific evidence
                   </h2>
                   <div className="space-y-4">
@@ -204,10 +204,10 @@ export default function ExplorarPage() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="border-l-4 border-elfo-dourado pl-4 py-2"
+                        className="border-l-4 border-accent-secondary pl-4 py-2"
                       >
                         <div className="flex items-start justify-between gap-4 mb-2">
-                          <p className="font-semibold text-sm text-elfo-verde-escuro">
+                          <p className="font-semibold text-sm text-text-primary">
                             {e.claim}
                           </p>
                           <span
@@ -222,17 +222,17 @@ export default function ExplorarPage() {
                             {e.nivel}
                           </span>
                         </div>
-                        <p className="text-xs text-elfo-cinza italic mb-2">
+                        <p className="text-xs text-text-secondary italic mb-2">
                           "{e.trecho}"
                         </p>
                         <div className="flex flex-wrap gap-3 text-xs">
-                          <span className="text-elfo-cinza">{e.source.slice(0, 60)}</span>
+                          <span className="text-text-secondary">{e.source.slice(0, 60)}</span>
                           {e.doi && (
                             <a
                               href={`https://doi.org/${e.doi}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-ia-roxo-neon hover:underline inline-flex items-center gap-1"
+                              className="text-accent-primary hover:underline inline-flex items-center gap-1"
                             >
                               DOI: {e.doi} <ExternalLink size={10} />
                             </a>
@@ -252,7 +252,7 @@ export default function ExplorarPage() {
 
               {/* Caminhos */}
               {resultado.caminhos_possiveis?.length > 0 && (
-                <div className="bg-gradient-to-br from-ia-roxo-escuro to-ia-roxo-neon/20 text-white rounded-2xl p-6 shadow-lg">
+                <div className="bg-gradient-to-br from-bg-secondary to-accent-primary/20 text-text-primary rounded-2xl p-6 shadow-lg">
                   <h2 className="font-display font-bold text-xl mb-4 flex items-center gap-2">
                     <Sparkles size={20} />
                     Possible paths
@@ -266,7 +266,7 @@ export default function ExplorarPage() {
                         transition={{ delay: 0.5 + i * 0.1 }}
                         className="flex gap-3 text-sm leading-relaxed"
                       >
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-text-primary/20 flex items-center justify-center text-xs font-bold">
                           {i + 1}
                         </span>
                         <span>{c}</span>
@@ -293,7 +293,7 @@ export default function ExplorarPage() {
 
               {/* Aviso */}
               {resultado.aviso && (
-                <div className="text-center text-sm text-elfo-cinza italic bg-white rounded-2xl p-4 shadow-sm">
+                <div className="text-center text-sm text-text-secondary italic bg-bg-tertiary rounded-2xl p-4 shadow-sm">
                   {resultado.aviso}
                 </div>
               )}

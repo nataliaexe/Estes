@@ -109,29 +109,29 @@ export default function ContribuirPage() {
   }
 
   return (
-    <div className="min-h-screen bg-elfo-creme">
+    <div className="min-h-screen bg-bg-primary">
       <div className="max-w-3xl mx-auto px-6 py-12">
         <header className="mb-10">
-          <p className="text-xs uppercase tracking-widest text-elfo-dourado font-bold mb-3">
-            Contribuir
+          <p className="text-xs uppercase tracking-widest text-accent-secondary font-bold mb-3">
+            Contribute
           </p>
-          <h1 className="font-display font-black text-4xl md:text-5xl text-elfo-verde-escuro mb-4">
+          <h1 className="font-display font-black text-4xl md:text-5xl text-text-primary mb-4">
             Share knowledge
           </h1>
-          <p className="text-lg text-elfo-cinza">
-            Sua história, sua solução ou sua observação pode ajudar outras
-            pessoas. Todo conhecimento será validado por curadores antes de
-            entrar no Atlas.
+          <p className="text-lg text-text-secondary">
+            Your story, solution, or observation can help others. All
+            contributions will be validated by curators before entering the
+            Atlas.
           </p>
         </header>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-3xl shadow-sm p-8 space-y-6 border border-elfo-dourado/10"
+          className="bg-bg-tertiary rounded-3xl shadow-sm p-8 space-y-6 border border-border"
         >
           {/* Tipo */}
           <div>
-            <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-3">
+            <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary mb-3">
               Type of contribution
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -142,8 +142,8 @@ export default function ContribuirPage() {
                   onClick={() => setTipo(t.id)}
                   className={`p-4 rounded-xl border-2 transition-all text-left ${
                     tipo === t.id
-                      ? "border-elfo-verde-escuro bg-elfo-verde-escuro/5"
-                      : "border-elfo-dourado/20 hover:border-elfo-dourado/40"
+                      ? "border-accent-primary bg-accent-primary/5"
+                      : "border-border hover:border-accent-primary/40"
                   }`}
                 >
                   <t.icone
@@ -151,10 +151,10 @@ export default function ContribuirPage() {
                     className="mb-2"
                     style={{ color: t.cor }}
                   />
-                  <p className="font-semibold text-sm text-elfo-verde-escuro">
+                  <p className="font-semibold text-sm text-text-primary">
                     {t.label}
                   </p>
-                  <p className="text-xs text-elfo-cinza mt-1">
+                  <p className="text-xs text-text-secondary mt-1">
                     {t.descricao}
                   </p>
                 </button>
@@ -164,8 +164,8 @@ export default function ContribuirPage() {
 
           {/* Título */}
           <div>
-            <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-2">
-              Título
+            <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary mb-2">
+              Title
             </label>
             <input
               type="text"
@@ -175,14 +175,14 @@ export default function ContribuirPage() {
               value={form.titulo}
               onChange={(e) => setForm({ ...form, titulo: e.target.value })}
               placeholder="Summarize in one sentence"
-              className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-elfo-verde-vivo/50"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 text-text-primary placeholder:text-text-muted"
             />
           </div>
 
           {/* Conteúdo */}
           <div>
-            <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-2">
-              Conteúdo
+            <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary mb-2">
+              Content
             </label>
             <textarea
               required
@@ -192,15 +192,15 @@ export default function ContribuirPage() {
               value={form.conteudo}
               onChange={(e) => setForm({ ...form, conteudo: e.target.value })}
               placeholder="Tell the story, describe the solution, report the observation..."
-              className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-elfo-verde-vivo/50 resize-none"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 resize-none text-text-primary placeholder:text-text-muted"
             />
           </div>
 
           {/* Localização */}
           <div className="grid md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-2">
-                UF
+              <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary mb-2">
+                State (UF)
               </label>
               <input
                 type="text"
@@ -210,12 +210,12 @@ export default function ContribuirPage() {
                   setForm({ ...form, uf: e.target.value.toUpperCase() })
                 }
                 placeholder="MG"
-                className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-elfo-verde-vivo/50"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 text-text-primary placeholder:text-text-muted"
               />
             </div>
             <div>
-              <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-2">
-                Município
+              <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary mb-2">
+                Municipality
               </label>
               <input
                 type="text"
@@ -224,11 +224,11 @@ export default function ContribuirPage() {
                   setForm({ ...form, municipio: e.target.value })
                 }
                 placeholder="Ouro Preto"
-                className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-elfo-verde-vivo/50"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 text-text-primary placeholder:text-text-muted"
               />
             </div>
             <div>
-              <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado mb-2">
+              <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary mb-2">
                 Related case
               </label>
               <input
@@ -240,7 +240,7 @@ export default function ContribuirPage() {
                   setForm({ ...form, caso_numero: e.target.value })
                 }
                 placeholder="Ex: 1"
-                className="w-full px-4 py-3 rounded-xl border border-elfo-dourado/30 bg-white focus:outline-none focus:ring-2 focus:ring-elfo-verde-vivo/50"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-bg-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 text-text-primary placeholder:text-text-muted"
               />
             </div>
           </div>
@@ -248,35 +248,34 @@ export default function ContribuirPage() {
           {/* Evidências */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label className="block text-xs uppercase tracking-wider font-bold text-elfo-dourado">
+              <label className="block text-xs uppercase tracking-wider font-bold text-accent-secondary">
                 Evidence (optional)
               </label>
               <button
                 type="button"
                 onClick={adicionarEvidencia}
-                className="text-xs text-elfo-verde-escuro hover:text-elfo-verde-vivo flex items-center gap-1"
+                className="text-xs text-text-primary hover:text-accent-primary flex items-center gap-1"
               >
-                <Plus size={12} /> Adicionar
+                <Plus size={12} /> Add
               </button>
             </div>
             {evidencias.length === 0 ? (
-              <p className="text-xs text-elfo-cinza italic">
-                Adicione DOI, URL ou trecho de paper para reforçar a
-                credibilidade.
+              <p className="text-xs text-text-secondary italic">
+                Add DOI, URL, or paper excerpt to strengthen credibility.
               </p>
             ) : (
               <div className="space-y-3">
                 {evidencias.map((ev, i) => (
                   <div
                     key={i}
-                    className="p-3 bg-elfo-creme rounded-xl border border-elfo-dourado/20 relative"
+                    className="p-3 bg-bg-secondary rounded-xl border border-border relative"
                   >
                     <button
                       type="button"
                       onClick={() =>
                         setEvidencias(evidencias.filter((_, j) => j !== i))
                       }
-                      className="absolute top-2 right-2 text-elfo-cinza hover:text-red-500"
+                      className="absolute top-2 right-2 text-text-secondary hover:text-red-500"
                     >
                       <X size={14} />
                     </button>
@@ -289,7 +288,7 @@ export default function ContribuirPage() {
                         novo[i].titulo = e.target.value;
                         setEvidencias(novo);
                       }}
-                      className="w-full mb-2 px-3 py-2 text-xs rounded-lg border border-elfo-dourado/20"
+                      className="w-full mb-2 px-3 py-2 text-xs rounded-lg border border-border bg-bg-tertiary text-text-primary placeholder:text-text-muted"
                     />
                     <input
                       type="text"
@@ -300,7 +299,7 @@ export default function ContribuirPage() {
                         novo[i].doi = e.target.value;
                         setEvidencias(novo);
                       }}
-                      className="w-full mb-2 px-3 py-2 text-xs rounded-lg border border-elfo-dourado/20"
+                      className="w-full mb-2 px-3 py-2 text-xs rounded-lg border border-border bg-bg-tertiary text-text-primary placeholder:text-text-muted"
                     />
                     <textarea
                       placeholder="Literal paper excerpt"
@@ -311,7 +310,7 @@ export default function ContribuirPage() {
                         novo[i].trecho = e.target.value;
                         setEvidencias(novo);
                       }}
-                      className="w-full px-3 py-2 text-xs rounded-lg border border-elfo-dourado/20 resize-none"
+                      className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-bg-tertiary resize-none text-text-primary placeholder:text-text-muted"
                     />
                   </div>
                 ))}
@@ -327,10 +326,10 @@ export default function ContribuirPage() {
             disabled={enviando || !usuario}
           >
             {!usuario
-              ? "Faça login para contribuir"
+              ? "Sign in to contribute"
               : enviando
-              ? "Publicando..."
-              : "Publicar contribuição"}
+              ? "Publishing..."
+              : "Publish contribution"}
           </Button>
         </form>
       </div>
