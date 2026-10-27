@@ -1,372 +1,95 @@
-# Estes — Environmental Citizenship Platform
+# Estes
 
-> **You bring what you have. Estes investigates what can be done.**
+Plataforma aberta de investigação ambiental. O projeto reúne uma interface web e uma API para explorar casos ambientais, consultar fontes científicas, registrar contribuições e experimentar fluxos de análise assistidos por IA.
 
-**Estes** is an open-source platform that turns local waste — eucalyptus, coffee husk, rice husk, açaí — into environmental solutions. Any material. Any problem. Always with scientific evidence and DOI.
+> O Estes é um protótipo em desenvolvimento. Não substitui análise laboratorial, avaliação profissional ou políticas públicas. Hipóteses e resultados precisam de validação independente.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
-[![Next.js 16](https://img.shields.io/badge/Next.js-16-black.svg)](https://nextjs.org/)
+## Estado atual
 
----
+O repositório contém:
 
-## The problem
+- **Frontend:** Next.js 16 e React 19, com páginas para atlas de casos, exploração, evidências, notícias, chat, contribuição e medição.
+- **API:** FastAPI com rotas para casos, ciência, clima, queimadas, notícias, documentos, contribuições e IA.
+- **Busca científica:** integrações implementadas para Semantic Scholar, Crossref e OpenAlex, com persistência/cache em PostgreSQL e busca opcional na web via Tavily.
+- **Extração de evidências:** fluxo que usa abstracts disponíveis e pede trechos literais, limitações e classificação à IA. Isso não equivale a revisão sistemática nem valida por si só a fidelidade da extração.
+- **Infraestrutura local:** PostgreSQL com pgvector e Redis via Docker Compose; migrações Alembic.
+- **Testes automatizados:** testes assíncronos da API, dos parsers científicos, da extração de evidências e do comportamento dos probes.
 
-Brazil has **5,570 municipalities**. Most have **no lab, no sensors, no data**. When a river is contaminated, people find out **weeks later** — if ever.
+### Limites que devem aparecer em uma demonstração
 
-Meanwhile, Brazil exports **raw cellulose, raw soy, raw iron**. We export what we have. We don't transform it.
+- Os testes automatizados cobrem regras e respostas simuladas. A rota `/api/v1/health/apis` verifica dependências e APIs reais configuradas, mas disponibilidade externa pode variar.
+- Não há evidência no código de validação experimental do Quantum Cell. Trate-o como hipótese de pesquisa.
+- Integrações externas precisam de rede, credenciais quando aplicável e serviços locais configurados. A presença de uma integração no código não garante disponibilidade ou validação operacional.
+- Semantic Scholar pode limitar tráfego com HTTP 429. Crossref e OpenAlex funcionaram no último smoke test real; Groq, Gemini, Ollama e Open-Meteo também foram verificados. Esses resultados são pontuais.
+- Não há no fluxo atual um registro reprodutível completo que conecte toda evidência, hipótese, recursos, testes e resultados como descrito no pitch.
+- O README e a interface não devem apresentar impactos ambientais, números de cobertura ou alegações jurídicas sem fonte primária verificável e contexto.
 
-In July 2026, the Brazilian Federal Court declared a "state of unconstitutional things" for the **Maxakali people**. Four times more children die there than the national average — not because of a war, but because they don't have clean water.
+## Estrutura
 
-> **Estes inverts this logic.** We turn local waste into local solutions.
+```text
+backend/
+  app/                 API, modelos, esquemas, serviços e rotas
+  alembic/             migrações do banco
+  scripts/             seeds e verificações manuais
+  docker-compose.yml   PostgreSQL/pgvector e Redis
+  requirements.txt
+frontend/
+  app/                 páginas e componentes Next.js
+```
 
----
+## Desenvolvimento local
 
-## How it works
+### 1. Configurar variáveis
 
-┌─────────────────────────────────────────────────────────────┐
-│ 1. YOU BRING │
-│ Material (eucalyptus, coffee husk, rice husk) │
-│ + Problem (contaminated water, degraded soil) │
-└──────────────────────────┬──────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ 2. ESTES SEARCHES │
-│ 250M papers · Semantic Scholar · Crossref · OpenAlex │
-│ + Live web · Tavily │
-└──────────────────────────┬──────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ 3. EVIDENCE EXTRACTION │
-│ • DOI + literal excerpt │
-│ • Level: demonstrated / supported / modeled / hypothesis│
-│ • Limitations │
-│ • Anti-hallucination verification │
-└──────────────────────────┬──────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ 4. PROTOCOL GENERATION │
-│ Ready (5 min) · Simple (1 day) · Complete (1 week) │
-└──────────────────────────┬──────────────────────────────────┘
-│
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ 5. ACTION │
-│ Test · Filter · Document · Report to MPF/IBAMA/FUNAI │
-└─────────────────────────────────────────────────────────────┘
-text
+Copie `backend/.env.example` para `backend/.env`. Crie `frontend/.env.local` com `NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1`. Configure uma `SECRET_KEY` forte e as chaves dos provedores que pretende usar. Não compartilhe arquivos `.env`.
 
-
----
-
-## What's inside
-
-### Backend
-- **FastAPI** + Pydantic v2 + SQLAlchemy 2.0 (async)
-- **PostgreSQL 16** + **pgvector** (semantic search)
-- **Redis** (cache + rate limiting)
-- **Alembic** (migrations)
-- **APScheduler** (news collection)
-- **Circuit breaker** (survives AI failures)
-
-### AI cascade (never fails)
-
-Groq (LLM) ─► Gemini (vision + fallback) ─► Ollama (local)
-│ │ │
-└──── if 429 ────────┴──── if timeout ────────┘
-text
-
-- **Groq** — main LLM (llama-3.3-70b, groq/compound)
-- **Gemini** — multimodal vision (gemini-2.5-flash)
-- **Ollama** — local fallback (llama3.2:1b)
-- **Circuit breaker** — automatic provider switching after 3 failures
-
-### Scientific engine
-- **Semantic Scholar** (200M+ papers)
-- **Crossref** (150M+ DOIs)
-- **OpenAlex** (250M+ works)
-- **Tavily** (academic web search)
-- **NASA FIRMS** (live fire hotspots)
-- **Open-Meteo** (climate + air quality)
-
-### Frontend
-- **Next.js 16** + TypeScript + Tailwind v4
-- **GSAP ScrollTrigger** (story-scroll narrative)
-- **Framer Motion** (animations)
-- **Leaflet** (live map)
-- **i18n** (PT/EN)
-
-### Hardware (Case #01)
-- **CQD sensor** — eucalyptus → carbon quantum dots → fluorescent strip
-- **CNC/biochar filter** — eucalyptus → nanocellulose + activated biochar
-- **Total cost:** $5 per filter, $1 per test strip
-
----
-
-## The Atlas — 19 investigated cases
-
-| # | UF | Category | Solution | Evidence |
-|---|---|---|---|---|
-| 01 | MG | water | Eucalyptus sensor + filter | demonstrated |
-| 02 | PA | mercury | Açaí + castanha biochar | demonstrated |
-| 03 | RR | mercury | Banana + babassu filter | demonstrated |
-| 04 | AC | deforestation | Castanha nanocellulose | supported |
-| 05 | BA | water | Babassu biochar | supported |
-| 06 | PE | water | Sisal membranes | modeled |
-| 07 | MT | fire | Cana sensor network | supported |
-| 08 | GO | soil | Rice husk silica biochar | supported |
-| 09 | MG | water | Coffee + cana biochar | supported |
-| 10 | SP | deforestation | Orange nanocellulose | supported |
-| 11 | RS | flood | Rice husk filter | demonstrated |
-| 12 | PR | agrotoxin | Wood biochar | modeled |
-| 13 | AM | air | Community air network | supported |
-| 15 | MG | mercury | Biochar for Hg soil | supported |
-| 16 | SP | soil | Phytoremediation | demonstrated |
-| 17 | MG | waste | Community biodigester | demonstrated |
-| 18 | SP | waste | Microalgae effluent | demonstrated |
-| 19 | SP | waste | Recycling cooperative | demonstrated |
-| 22 | AM | deforestation | eDNA biodiversity | demonstrated |
-
-### Evidence levels
-
-| Level | Meaning |
-|---|---|---|
-|**demonstrated** | Reproduced experimentally with data |
-|**supported** | Literature-backed, not validated in the exact case |
-|**modeled** | Simulation / computational model |
-|**hypothesis** | Theoretical proposal |
-|*insufficient** | No evidence yet |
-
----
-
-## Quick start
-
-### Prerequisites
-- Docker + Docker Compose
-- Python 3.12+ with `uv`
-- Node 22+ with `npm`
-- Ollama running at `localhost:11434`
-
-### Backend
+### 2. Iniciar dependências e API
 
 ```bash
 cd backend
-
-# Virtual environment
-uv venv --python 3.12 .venv
-source .venv/bin/activate
-
-# Dependencies
-uv pip install -r requirements.txt
-
-# Config
-cp .env.example .env
-# Edit .env with your keys: GROQ_API_KEY, GEMINI_API_KEY, TAVILY_API_KEY, FIRMS_API_KEY
-
-# Containers (Postgres + Redis)
 docker compose up -d
-
-# Migrations
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 alembic upgrade head
+uvicorn app.main:app --reload
+```
 
-# Seed the Atlas (19 cases)
-python scripts/seed_atlas.py
-python scripts/seed_amostras.py
+A API e sua documentação ficam, por padrão, em `http://localhost:8000` e `http://localhost:8000/docs`.
 
-# Run
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+### 3. Iniciar frontend
 
-API at http://localhost:8000 · docs at /docs
-Frontend
-bash
+Em outro terminal:
 
+```bash
 cd frontend
-
 npm install
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1" > .env.local
 npm run dev
+```
 
-App at http://localhost:3000
-API endpoints
-Atlas
+O frontend usa `NEXT_PUBLIC_API_URL` para localizar a API. Defina essa variável em `frontend/.env.local` quando necessário.
 
-    GET /api/v1/casos — list cases (filters: categoria, uf, evidencia)
+## Verificações
 
-    GET /api/v1/casos/{numero} — case detail with history, sources, protocols
+```bash
+# Backend
+cd backend
+pytest -q
+ruff check app
 
-    POST /api/v1/casos/buscar — semantic search
+# Frontend
+cd frontend
+npm run typecheck
+npm run lint
+npm run build
+```
 
-    GET /api/v1/casos/estatisticas — counts
+O build de produção usa Webpack. O lint foi ligado ao ESLint recomendado pelo Next.js; ele ainda aponta pendências herdadas no frontend. Consulte o resultado mais recente antes de tratar as verificações como critério de release.
 
-AI
+## Pitch e Quantum Cell
 
-    POST /api/v1/ia/perguntar — agent with Atlas + web + science
+O pitch deve separar claramente funcionalidades presentes, integrações configuráveis, comportamentos planejados e resultados ainda não medidos. O Quantum Cell é apresentado como linha de pesquisa em sensoriamento óptico com derivados de celulose de eucalipto; não há validação experimental concluída neste repositório.
 
-    POST /api/v1/ia/stream — SSE streaming
+## Licença
 
-    POST /api/v1/ia/vision — image analysis (Gemini Vision)
-
-    POST /api/v1/explorar — scientific engine for any material
-
-    POST /api/v1/ia/gerar-passos/{caso} — AI-generated protocol images
-
-Context
-
-    GET /api/v1/clima?lat=&lon= — climate + fire risk
-
-    GET /api/v1/queimadas?lat=&lon= — NASA FIRMS hotspots
-
-    GET /api/v1/predicao?lat=&lon= — combined risk prediction
-
-    GET /api/v1/mapa/pontos — unified GeoJSON
-
-    POST /api/v1/noticias/feed — localized news
-
-Contribution
-
-    POST /api/v1/contribuicoes — post contribution
-
-    POST /api/v1/contribuicoes/{id}/votar — vote
-
-    POST /api/v1/contribuicoes/{id}/validar — curator validation
-
-Auth
-
-    POST /api/v1/auth/registrar — register
-
-    POST /api/v1/auth/login — login (JWT)
-
-Project structure
-text
-
-Estes/
-├── backend/
-│   ├── app/
-│   │   ├── core/          # config, database, security, cache, circuit breaker
-│   │   ├── models/        # SQLAlchemy models
-│   │   ├── schemas/       # Pydantic schemas
-│   │   ├── routers/       # API endpoints
-│   │   ├── services/      # AI agent, science engine, climate, fires
-│   │   └── data/          # Atlas seeds, histories
-│   ├── alembic/           # migrations
-│   ├── scripts/           # utilities
-│   └── requirements.txt
-├── frontend/
-│   ├── app/
-│   │   ├── page.tsx           # home (story-scroll)
-│   │   ├── atlas/             # case list
-│   │   ├── caso/[numero]/     # case detail
-│   │   ├── chat/              # AI assistant
-│   │   ├── explorar/          # scientific engine
-│   │   ├── medir/             # photo analysis
-│   │   ├── contribuir/        # contribution form
-│   │   ├── noticias/          # news
-│   │   ├── componentes/       # UI components
-│   │   └── lib/               # api client, i18n
-│   └── package.json
-└── README.md
-
-Contributing
-
-This project is open source and welcomes contributions from:
-
-    Researchers — add cases to the Atlas
-
-    Developers — improve the platform, add languages
-
-    Communities — report real problems, test protocols
-
-    Curators — validate contributions
-
-How to contribute
-
-    Fork the repository
-
-    Create a branch (git checkout -b feature/new-case)
-
-    Commit your changes (git commit -m "feat: add case #20")
-
-    Push to the branch (git push origin feature/new-case)
-
-    Open a Pull Request
-
-See CONTRIBUTING.md for details.
-Roadmap
-
-     Phase 1 (Sep 2026): Backend + frontend + 19 cases + scientific engine
-
-     Phase 2 (Oct 2026): Scientific preprint + journal submission
-
-     Phase 3 (Nov 2026+): Native mobile app, indigenous language support
-
-     Phase 4 (2027): Atlas expansion to 5 Latin American countries
-
-     Phase 5 (2027+): Open data API for researchers and governments
-
-Hackathon disclosure
-Before NextStep Hacks 2026
-
-    Ideation and scope definition (Sept 9, 2026)
-
-    Initial Atlas with eucalyptus case (Sept 10, 2026)
-
-    Patent search and initial technical document (Sept 10, 2026)
-
-    Concept of platform + Brazilian Atlas (Sept 11, 2026)
-
-During NextStep Hacks 2026
-
-    Complete backend: FastAPI + PostgreSQL + pgvector + Redis
-
-    AI cascade: Groq → Gemini → Ollama with circuit breaker
-
-    Scientific engine: Semantic Scholar + Crossref + OpenAlex + Tavily
-
-    19 cases in the Atlas (9 categories, 5 Brazilian regions)
-
-    Frontend: Next.js 16 + Tailwind + Leaflet + GSAP + Framer Motion
-
-    Real-time data: Open-Meteo (climate) + NASA FIRMS (fires)
-
-    Contribution module: post, vote, comment, curate
-
-    Accessibility: TTS + high contrast
-
-    Cultural narratives: Maxakali, Waimiri Atroari, defenders
-
-    Story-scroll narrative with 6 scenes
-
-    Hardware prototype: CQD sensor + CNC/biochar filter
-
-Inspiration
-
-    "O Maxakali surgiu através da gíria, da gíria do barro. Por isso que o território para nós é muito importante. Todo local tem história e tem o canto também."
-
-    — Maxakali elder, Vale do Mucuri, MG
-
-In July 2026, the Brazilian Federal Court declared a "state of unconstitutional things" for the Maxakali people. Four times more children die there than the national average — not because of a war, but because they don't have clean water.
-
-The right to keep existing.
-License
-
-MIT — open source, always free.
-
-The platform will never be commercialized. Hardware kits may be sold to fund the platform, but the core stays open.
-Acknowledgements
-
-    Bawendi, Brus, Ekimov (Nobel Prize 2023) — quantum dots
-
-    Förster (1948) — FRET
-
-    NASA FIRMS — live fire hotspots
-
-    INPE, IBGE, ANA, FIOCRUZ — Brazilian environmental data
-
-    ISA, IPAM, Repórter Brasil — environmental journalism
-
-    Maxakali, Waimiri Atroari, Yanomami communities — the why
-
-Estes — Solutions that grow from the root.
+O README anterior indicava MIT, mas não havia arquivo de licença rastreado. A licença precisa ser definida e incluída antes de descrever o repositório como formalmente licenciado como código aberto.

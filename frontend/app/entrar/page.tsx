@@ -52,8 +52,8 @@ export default function EntrarPage() {
         toast.success("Conta criada. Bem-vindo ao Estes!");
       }
       router.push("/");
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível autenticar");
     } finally {
       setCarregando(false);
     }

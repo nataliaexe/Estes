@@ -1,5 +1,4 @@
 from datetime import UTC, datetime, timedelta
-from uuid import UUID
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext

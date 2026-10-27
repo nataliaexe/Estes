@@ -11,16 +11,49 @@ import {
   DollarSign,
   FileText,
 } from "lucide-react";
-import { Badge } from "../../componentes/ui/badge";
+import { Badge, type BadgeProps } from "../../componentes/ui/badge";
 
-async function getCaso(numero: string) {
+type CasoPageData = {
+  numero: number;
+  titulo: string;
+  uf: string;
+  categoria: string;
+  tipo_solucao: string;
+  precisa_hardware: boolean;
+  problema: string;
+  recurso_local: string;
+  solucao: string;
+  evidencia: string;
+  historia: string;
+  fontes_historicas: { tipo?: string; titulo?: string; veiculo?: string; orgao?: string; url?: string; ano?: string | number; data?: string }[];
+  impacto_estimado: Record<string, unknown>;
+  composicao: Record<string, unknown>;
+  propriedades: Record<string, unknown>;
+  aplicacoes: Record<string, unknown>;
+  lacunas: string[];
+  referencias: string[];
+  nivel_1_pronto: NivelData;
+  nivel_2_simples: NivelData;
+  nivel_3_completo: NivelData;
+  evidencias: { claim?: string; titulo?: string; trecho?: string; doi?: string; source?: string; nivel?: string; limitacoes?: string }[];
+};
+
+type NivelData = { tempo?: string; custo?: string; passos?: string[] };
+
+const CATEGORIA_VARIANTS: Record<string, NonNullable<BadgeProps["variant"]>> = {
+  agua: "agua", solo: "solo", ar: "ar", queimada: "queimada",
+  desmatamento: "desmatamento", residuos: "residuos", mercurio: "mercurio",
+  agrotoxico: "agrotoxico", enchente: "enchente",
+};
+
+async function getCaso(numero: string): Promise<CasoPageData | null> {
   try {
     const r = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/casos/${numero}`,
       { cache: "no-store" }
     );
     if (!r.ok) return null;
-    return r.json();
+    return (await r.json()) as CasoPageData;
   } catch {
     return null;
   }
@@ -111,7 +144,7 @@ export default async function CasoPage({
         {/* HEADER */}
         <header className="bg-bg-tertiary rounded-3xl p-8 md:p-12 shadow-sm mb-8 border border-border">
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <Badge variant={caso.categoria as any}>{caso.categoria}</Badge>
+            <Badge variant={CATEGORIA_VARIANTS[caso.categoria] || "default"}>{caso.categoria}</Badge>
             <Badge variant="default">{caso.tipo_solucao}</Badge>
             <span
               className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold border ${
@@ -184,7 +217,7 @@ export default async function CasoPage({
                   Sources
                 </p>
                 <ul className="space-y-2">
-                  {caso.fontes_historicas.map((f: any, i: number) => (
+                  {caso.fontes_historicas.map((f, i) => (
                     <li key={i} className="text-sm text-text-secondary flex items-start gap-2">
                       <FileText size={14} className="mt-1 flex-shrink-0 text-accent-secondary" />
                       {f.url ? (
@@ -261,7 +294,7 @@ export default async function CasoPage({
               </h2>
             </div>
             <div className="space-y-4">
-              {caso.evidencias.map((e: any, i: number) => (
+              {caso.evidencias.map((e, i) => (
                 <div
                   key={i}
                   className="border-l-4 border-accent-secondary pl-4 py-2"
@@ -271,7 +304,7 @@ export default async function CasoPage({
                   </p>
                   {e.trecho && (
                     <p className="text-xs text-text-secondary italic mb-2">
-                      "{e.trecho}"
+                      “{e.trecho}”
                     </p>
                   )}
                   {e.doi && (

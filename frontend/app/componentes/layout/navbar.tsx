@@ -17,14 +17,10 @@ export function Navbar() {
 
   const links = [
     { href: "/", label: t.nav.home },
-    { href: "/atlas", label: t.nav.atlas },
-    { href: "/evidence", label: t.nav.evidence },
-    { href: "/laboratory", label: t.nav.laboratory },
-    { href: "/solutions", label: t.nav.solutions },
-    { href: "/data", label: t.nav.data },
-    { href: "/explorar", label: t.nav.explore },
-    { href: "/chat", label: t.nav.assistant },
-    { href: "/contribuir", label: t.nav.contribute },
+    { href: "/investigar/nova", label: t.nav.investigate },
+    { href: "/casos", label: t.nav.cases },
+    { href: "/quantum-cell", label: t.nav.quantumCell },
+    { href: "/sobre", label: t.nav.about },
   ];
 
   function handleSair() {
@@ -45,9 +41,7 @@ export function Navbar() {
               <span className="text-xl font-display font-bold text-text-primary tracking-tight">
                 ESTES
               </span>
-              <span className="text-[10px] text-text-secondary tracking-wider uppercase">
-                {t.nav.tagline}
-              </span>
+  
             </div>
           </Link>
 
@@ -74,9 +68,12 @@ export function Navbar() {
 
             {/* Toggle idioma */}
             <button
-              onClick={() => setLocale(locale === "pt" ? "en" : "pt")}
+              onClick={() => {
+                if (locale === "pt") setLocale("en");
+                else if (locale === "en") setLocale("es");
+                else setLocale("pt");
+              }}
               className="ml-2 px-2 py-1 rounded-lg text-xs font-bold text-text-secondary hover:text-accent-primary hover:bg-text-primary/5 transition-all"
-              title={locale === "pt" ? "Switch to English" : "Mudar para Português"}
             >
               {locale.toUpperCase()}
             </button>
@@ -138,12 +135,14 @@ export function Navbar() {
             ))}
             <button
               onClick={() => {
-                setLocale(locale === "pt" ? "en" : "pt");
+                if (locale === "pt") setLocale("en");
+                else if (locale === "en") setLocale("es");
+                else setLocale("pt");
                 setAberto(false);
               }}
               className="block w-full text-left px-4 py-2 rounded-lg text-sm font-bold text-accent-primary"
             >
-              {locale === "pt" ? "Switch to English" : "Mudar para Português"}
+              {locale.toUpperCase()}
             </button>
             {usuario ? (
               <button

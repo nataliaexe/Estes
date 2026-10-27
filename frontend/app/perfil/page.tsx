@@ -88,7 +88,7 @@ export default function PerfilPage() {
   );
 }
 
-function PerfilConteudo({ usuario }: any) {
+function PerfilConteudo({ usuario }: { usuario: { nome: string; email: string; perfil: string; uf: string | null; municipio: string | null } }) {
   return (
     <div className="space-y-6">
       <div>

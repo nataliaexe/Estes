@@ -11,7 +11,6 @@ from app.core.database import get_session
 from app.core.logging import get_logger
 from app.services.ia_providers import (
     ProvedorIndisponivel,
-    completar_cascata,
 )
 
 log = get_logger(__name__)
@@ -55,8 +54,8 @@ async def _analisar_com_gemini_vision(
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/"
         f"{settings.gemini_model}:generateContent"
-        f"?key={settings.gemini_api_key}"
     )
+    headers = {"x-goog-api-key": settings.gemini_api_key}
 
     payload = {
         "contents": [
@@ -79,7 +78,7 @@ async def _analisar_com_gemini_vision(
     }
 
     async with httpx.AsyncClient(timeout=60.0) as client:
-        r = await client.post(url, json=payload)
+        r = await client.post(url, headers=headers, json=payload)
         if r.status_code != 200:
             raise ProvedorIndisponivel(f"Gemini Vision {r.status_code}: {r.text[:200]}")
         data = r.json()

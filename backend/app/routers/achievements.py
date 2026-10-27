@@ -6,8 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
 from app.models.contribuicao import Contribuicao, Voto
-from app.models.medicao import Medicao
-from app.models.usuario import Usuario
 
 router = APIRouter(prefix="/achievements", tags=["achievements"])
 
@@ -35,12 +33,6 @@ async def get_achievements(
         select(func.count(Voto.id)).where(Voto.usuario_id == uid)
     )
     total_votos = votos_r.scalar() or 0
-
-    # Medicoes
-    med_r = await session.execute(
-        select(func.count(Medicao.id))
-    )
-    total_medicoes = med_r.scalar() or 0
 
     conquistas = []
 

@@ -20,6 +20,8 @@ async def get_client() -> redis.Redis:
             settings.redis_url,
             encoding="utf-8",
             decode_responses=True,
+            socket_connect_timeout=2.0,
+            socket_timeout=2.0,
         )
     return _client
 
@@ -62,3 +64,11 @@ async def cache_ping() -> bool:
         return bool(await client.ping())
     except Exception:
         return False
+
+
+async def cache_close() -> None:
+    """Fecha o pool Redis no encerramento da aplicacao."""
+    global _client
+    if _client is not None:
+        await _client.aclose()
+        _client = None

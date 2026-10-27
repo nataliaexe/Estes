@@ -10,6 +10,10 @@ def configurar_logging() -> None:
         stream=sys.stdout,
         level=logging.INFO,
     )
+    # HTTP request logs include full URLs. Some upstream APIs (for example,
+    # NASA FIRMS) require credentials in the URL path, so never log them.
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
 
     structlog.configure(
         processors=[

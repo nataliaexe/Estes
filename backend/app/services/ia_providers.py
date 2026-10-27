@@ -1,6 +1,6 @@
 """Provedores de LLM em cascata: Groq -> Gemini -> Ollama."""
 
-import time
+import asyncio
 from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 
@@ -66,15 +66,13 @@ async def groq_completar(
                 retry_after = int(r.headers.get("Retry-After", 2))
                 await asyncio.sleep(min(retry_after, 5))
                 circuit_breaker.registrar_falha("groq")
-                raise ProvedorIndisponivel(f"Groq 429 rate limit")
+                raise ProvedorIndisponivel("Groq 429 rate limit")
 
             if r.status_code != 200:
                 circuit_breaker.registrar_falha("groq")
                 raise ProvedorIndisponivel(f"Groq {r.status_code}")
 
             data = r.json()
-            circuito_ok = True
-
     except httpx.HTTPError as e:
         circuit_breaker.registrar_falha("groq")
         raise ProvedorIndisponivel(f"Groq rede: {e}")
@@ -115,8 +113,8 @@ async def gemini_completar(
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/"
         f"{settings.gemini_model}:generateContent"
-        f"?key={settings.gemini_api_key}"
     )
+    headers = {"x-goog-api-key": settings.gemini_api_key}
 
     contents = []
     system_instruction = None
@@ -139,7 +137,7 @@ async def gemini_completar(
 
     try:
         async with httpx.AsyncClient(timeout=TIMEOUT_GEMINI) as client:
-            r = await client.post(url, json=payload)
+            r = await client.post(url, headers=headers, json=payload)
 
             if r.status_code == 429:
                 circuit_breaker.registrar_falha("gemini")

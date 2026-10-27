@@ -5,9 +5,7 @@ from dataclasses import dataclass, field
 
 import httpx
 from sqlalchemy import select, update
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.cache import cache_get, cache_set
 from app.core.database import SessionLocal
 from app.core.logging import get_logger
 from app.models.paper import Paper as PaperModel

@@ -1,8 +1,5 @@
 """Scheduler para coleta periodica de noticias."""
 
-import asyncio
-from contextlib import suppress
-from datetime import UTC, datetime
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger

@@ -5,9 +5,7 @@ from uuid import UUID, uuid4
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
-    Boolean,
     DateTime,
-    Float,
     ForeignKey,
     Integer,
     String,

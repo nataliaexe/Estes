@@ -2,37 +2,22 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from slowapi import _rate_limit_exceeded_handler
-from slowapi.errors import RateLimitExceeded
 
+from app.core.cache import cache_close
 from app.core.config import settings
+from app.core.database import engine
 from app.core.logging import configurar_logging, get_logger
-from app.core.scheduler import iniciar_scheduler, parar_scheduler
+from app.core.scheduler import parar_scheduler
+from app.api.routes import (
+    cases,
+    evidence,
+    hypotheses,
+    materials,
+    protocols,
+    search,
+)
 from app.routers import (
-    acessibilidade,
-    achievements,
-    auth,
-    casos,
-    clima,
-    contribuicoes,
-    dashboard,
-    documentos,
-    explorar,
-    exportar,
-    hardware,
     health,
-    imagens,
-    ia,
-    ia_health,
-    ia_imagens,
-    ia_vision,
-    ia_stream,
-    mapa,
-    memoria,
-    noticias,
-    noticias_stream,
-    predicao,
-    queimadas,
 )
 
 configurar_logging()
@@ -51,18 +36,22 @@ async def lifespan(app: FastAPI):
         firms=bool(settings.firms_api_key),
     )
     # iniciar_scheduler()  # desativado em dev
-    yield
-    parar_scheduler()
-    log.info("estes_encerrando")
+    try:
+        yield
+    finally:
+        parar_scheduler()
+        await cache_close()
+        await engine.dispose()
+        log.info("estes_encerrando")
 
 
 app = FastAPI(
     title=settings.app_name,
-    version="0.4.0",
+    version="0.5.0",
     description=(
-        "Plataforma de cidadania ambiental. "
-        "Transforma recursos locais em solucoes ambientais "
-        "e garante direitos por meio de evidencia cientifica."
+        "Environmental investigation platform. "
+        "Organizes and tracks environmental investigations based on "
+        "scientific evidence, local materials, and traceable hypotheses."
     ),
     lifespan=lifespan,
 )
@@ -70,50 +59,26 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-from app.routers.ia import limiter  # noqa: E402
-
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
 PREFIX = settings.api_v1_prefix
 
-# Routers
-app.include_router(auth.router, prefix=PREFIX)
-app.include_router(casos.router, prefix=PREFIX)
-app.include_router(acessibilidade.router, prefix=PREFIX)
-app.include_router(achievements.router, prefix=PREFIX)
-app.include_router(clima.router, prefix=PREFIX)
-app.include_router(queimadas.router, prefix=PREFIX)
-app.include_router(predicao.router, prefix=PREFIX)
-app.include_router(noticias_stream.router, prefix=PREFIX)
-app.include_router(hardware.router, prefix=PREFIX)
-app.include_router(noticias.router, prefix=PREFIX)
-app.include_router(documentos.router, prefix=PREFIX)
-app.include_router(dashboard.router, prefix=PREFIX)
-app.include_router(mapa.router, prefix=PREFIX)
-app.include_router(memoria.router, prefix=PREFIX)
-app.include_router(exportar.router, prefix=PREFIX)
-app.include_router(explorar.router, prefix=PREFIX)
+# MVP routers
+app.include_router(cases.router, prefix=PREFIX)
+app.include_router(evidence.router, prefix=PREFIX)
+app.include_router(materials.router, prefix=PREFIX)
+app.include_router(hypotheses.router, prefix=PREFIX)
+app.include_router(protocols.router, prefix=PREFIX)
+app.include_router(search.router, prefix=PREFIX)
 app.include_router(health.router, prefix=PREFIX)
-app.include_router(imagens.router, prefix=PREFIX)
-
-# IA (ordem importa: stream antes do router principal)
-app.include_router(ia_stream.router, prefix=PREFIX)
-app.include_router(ia_imagens.router, prefix=PREFIX)
-app.include_router(contribuicoes.router, prefix=PREFIX)
-app.include_router(ia.router, prefix=PREFIX)
-app.include_router(ia_health.router, prefix=PREFIX)
-app.include_router(ia_vision.router, prefix=PREFIX)
 
 
 @app.get("/")
 async def raiz():
-    return {"nome": settings.app_name, "versao": "0.4.0", "docs": "/docs"}
+    return {"nome": settings.app_name, "versao": "0.5.0", "docs": "/docs"}
 
 
 @app.get("/health")

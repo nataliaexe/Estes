@@ -63,7 +63,7 @@ async def obter_focos(
                 return []
             texto = r.text
     except httpx.HTTPError as e:
-        log.warning("firms_rede", erro=str(e)[:100])
+        log.warning("firms_rede", erro=type(e).__name__)
         return []
 
     focos = _parse_csv(texto)

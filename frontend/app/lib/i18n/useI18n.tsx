@@ -12,7 +12,11 @@ import { dict, Locale } from "./dict";
 type I18nContextType = {
   locale: Locale;
   setLocale: (l: Locale) => void;
-  t: typeof dict["pt"];
+  t: WidenStrings<typeof dict["pt"]>;
+};
+
+type WidenStrings<T> = {
+  [K in keyof T]: T[K] extends string ? string : WidenStrings<T[K]>;
 };
 
 const I18nContext = createContext<I18nContextType | null>(null);
@@ -21,18 +25,17 @@ const STORAGE_KEY = "estes_locale";
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("pt");
-  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
-    if (saved === "pt" || saved === "en") {
-      setLocaleState(saved);
-    } else {
-      // Detecta idioma do browser
-      const browserLang = navigator.language.split("-")[0];
-      if (browserLang === "en") setLocaleState("en");
-    }
-    setHydrated(true);
+    const timeout = window.setTimeout(() => {
+      const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
+      if (saved === "pt" || saved === "en") {
+        setLocaleState(saved);
+      } else if (navigator.language.split("-")[0] === "en") {
+        setLocaleState("en");
+      }
+    }, 0);
+    return () => window.clearTimeout(timeout);
   }, []);
 
   function setLocale(l: Locale) {
@@ -42,7 +45,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   return (
     <I18nContext.Provider
-      value={{ locale, setLocale, t: dict[locale] as any }}
+      value={{ locale, setLocale, t: dict[locale] as WidenStrings<typeof dict.pt> }}
     >
       {children}
     </I18nContext.Provider>

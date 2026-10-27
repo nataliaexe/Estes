@@ -9,6 +9,8 @@ async function fetcher<T>(path: string, opts?: RequestInit): Promise<T> {
   return r.json();
 }
 
+import type { Case, Evidence, Material, Hypothesis, Protocol } from "./types";
+
 export type Caso = {
   id: string;
   numero: number;
@@ -93,4 +95,91 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ consulta, limite: 5 }),
     }),
+  // MVP endpoints
+  cases: {
+    list: (params?: { status?: string; problem_type?: string; limit?: number; offset?: number }) => {
+      const q = new URLSearchParams(params as Record<string, string>).toString();
+      return fetcher<Case[]>(`/cases${q ? `?${q}` : ""}`);
+    },
+    get: (id: string) => fetcher<Case>(`/cases/${id}`),
+    create: (data: {
+      title: string;
+      location: string;
+      problem_type: string;
+      summary: string;
+      status?: string;
+    }) =>
+      fetcher<Case>("/cases", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    update: (id: string, data: Partial<Case>) =>
+      fetcher<Case>(`/cases/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+  },
+  evidence: {
+    listByCase: (caseId: string, limit?: number, offset?: number) => {
+      const params = new URLSearchParams();
+      if (limit) params.append("limit", limit.toString());
+      if (offset) params.append("offset", offset.toString());
+      return fetcher<Evidence[]>(`/evidence/case/${caseId}${params ? `?${params}` : ""}`);
+    },
+    get: (id: string) => fetcher<Evidence>(`/evidence/${id}`),
+    create: (data: Evidence) =>
+      fetcher<Evidence>("/evidence", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+  },
+  materials: {
+    listByCase: (caseId: string, limit?: number, offset?: number) => {
+      const params = new URLSearchParams();
+      if (limit) params.append("limit", limit.toString());
+      if (offset) params.append("offset", offset.toString());
+      return fetcher<Material[]>(`/materials/case/${caseId}${params ? `?${params}` : ""}`);
+    },
+    get: (id: string) => fetcher<Material>(`/materials/${id}`),
+    create: (data: Material) =>
+      fetcher<Material>("/materials", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+  },
+  hypotheses: {
+    listByCase: (caseId: string, limit?: number, offset?: number) => {
+      const params = new URLSearchParams();
+      if (limit) params.append("limit", limit.toString());
+      if (offset) params.append("offset", offset.toString());
+      return fetcher<Hypothesis[]>(`/hypotheses/case/${caseId}${params ? `?${params}` : ""}`);
+    },
+    get: (id: string) => fetcher<Hypothesis>(`/hypotheses/${id}`),
+    create: (data: Hypothesis) =>
+      fetcher<Hypothesis>("/hypotheses", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+  },
+  protocols: {
+    listByCase: (caseId: string, limit?: number, offset?: number) => {
+      const params = new URLSearchParams();
+      if (limit) params.append("limit", limit.toString());
+      if (offset) params.append("offset", offset.toString());
+      return fetcher<Protocol[]>(`/protocols/case/${caseId}${params ? `?${params}` : ""}`);
+    },
+    get: (id: string) => fetcher<Protocol>(`/protocols/${id}`),
+    create: (data: Protocol) =>
+      fetcher<Protocol>("/protocols", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+  },
+  search: {
+    scientific: (query: string, caseId?: string) =>
+      fetcher<any>("/search/scientific", {
+        method: "POST",
+        body: JSON.stringify({ query, case_id: caseId }),
+      }),
+  },
 };

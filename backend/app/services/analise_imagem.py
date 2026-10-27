@@ -3,7 +3,6 @@
 import io
 from dataclasses import dataclass
 
-import numpy as np
 from PIL import Image, ImageStat
 
 from app.core.logging import get_logger

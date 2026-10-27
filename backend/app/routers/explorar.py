@@ -15,7 +15,7 @@ from app.schemas.explorar import (
 )
 from app.services.ciencia import buscar_cientifico
 from app.services.evidencia import extrair_e_cachear
-from app.services.ia_providers import ProvedorIndisponivel, completar_cascata
+from app.services.ia_providers import ProvedorIndisponivel
 from app.services.ia_providers import gemini_completar, groq_completar
 
 log = get_logger(__name__)

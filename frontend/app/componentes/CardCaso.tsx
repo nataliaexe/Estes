@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MapPin, Cpu, Heart, MessageCircle, Users, TrendingUp } from "lucide-react";
-import { Badge } from "./ui/badge";
+import { Badge, type BadgeProps } from "./ui/badge";
 import { cn } from "../lib/utils";
 
 type Caso = {
@@ -25,7 +25,7 @@ type Caso = {
   tempo_publicacao?: string;
 };
 
-const CORES_CATEGORIA: Record<string, string> = {
+const CORES_CATEGORIA: Record<string, NonNullable<BadgeProps["variant"]>> = {
   agua: "agua",
   solo: "solo",
   ar: "ar",
@@ -51,7 +51,7 @@ const CORES_GLOW: Record<string, string> = {
 
 export function CardCaso({ caso, index = 0 }: { caso: Caso; index?: number }) {
   const cor = CORES_GLOW[caso.categoria] || "#4BF98D";
-  const badgeVariant = (CORES_CATEGORIA[caso.categoria] || "default") as any;
+  const badgeVariant = CORES_CATEGORIA[caso.categoria] || "default";
 
   return (
     <motion.div

@@ -4,11 +4,11 @@ from datetime import UTC, datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import desc, func, select
+from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
-from app.core.deps import usuario_atual, usuario_opcional
+from app.core.deps import usuario_atual
 from app.core.logging import get_logger
 from app.models.caso import Caso
 from app.models.contribuicao import Comentario, Contribuicao, Voto
@@ -19,7 +19,6 @@ from app.schemas.contribuicao import (
     ContribuicaoCreate,
     ContribuicaoDetalhe,
     ContribuicaoResumo,
-    ContribuicaoUpdate,
     ValidacaoInput,
     ValidacaoOut,
     VotoInput,

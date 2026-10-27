@@ -39,16 +39,31 @@ export function useChatHistory() {
   const [hydrated, setHydrated] = useState(false);
   const writeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    const saved = safeParse(window.localStorage.getItem(STORAGE_KEY));
-    setThreads(saved);
-    if (saved.length > 0) {
-      setCurrentId(saved[0].id);
-    } else {
-      createNewThread();
-    }
-    setHydrated(true);
+  const createNewThread = useCallback(() => {
+    const newThread: ChatThread = {
+      id: `thread-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      title: "New conversation",
+      messages: [],
+      updatedAt: Date.now(),
+    };
+    setThreads((prev) => [newThread, ...prev]);
+    setCurrentId(newThread.id);
+    return newThread.id;
   }, []);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      const saved = safeParse(window.localStorage.getItem(STORAGE_KEY));
+      setThreads(saved);
+      if (saved.length > 0) {
+        setCurrentId(saved[0].id);
+      } else {
+        createNewThread();
+      }
+      setHydrated(true);
+    }, 0);
+    return () => window.clearTimeout(timeout);
+  }, [createNewThread]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -68,6 +83,7 @@ export function useChatHistory() {
   const setMessages = useCallback(
     (updater: (prev: ChatMessage[]) => ChatMessage[]) => {
       if (!currentId) return;
+      const updatedAt = Date.now();
       setThreads((prev) =>
         prev.map((t) => {
           if (t.id !== currentId) return t;
@@ -78,25 +94,13 @@ export function useChatHistory() {
             title: t.title === "New conversation" && novo[0]
               ? novo[0].content.slice(0, 50)
               : t.title,
-            updatedAt: Date.now(),
+            updatedAt,
           };
         })
       );
     },
     [currentId]
   );
-
-  const createNewThread = useCallback(() => {
-    const newThread: ChatThread = {
-      id: `thread-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-      title: "New conversation",
-      messages: [],
-      updatedAt: Date.now(),
-    };
-    setThreads((prev) => [newThread, ...prev]);
-    setCurrentId(newThread.id);
-    return newThread.id;
-  }, []);
 
   const deleteThread = useCallback((id: string) => {
     setThreads((prev) => {

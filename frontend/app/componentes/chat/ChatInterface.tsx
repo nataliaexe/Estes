@@ -80,10 +80,13 @@ export function ChatInterface() {
             if (!dados) continue;
 
             try {
-              const obj = JSON.parse(dados);
+              const obj = JSON.parse(dados) as {
+                fontes?: { titulo?: string; url?: string; doi?: string; tipo?: string; score?: number }[];
+                texto?: string;
+              };
 
               if (tipo === "fontes") {
-                fontes = (obj.fontes || []).map((f: any) => ({
+                fontes = (obj.fontes || []).map((f) => ({
                   title: f.titulo || "Source",
                   url: f.url,
                   doi: f.doi,
@@ -127,8 +130,8 @@ export function ChatInterface() {
           )
         );
         setIsStreaming(false);
-      } catch (err: any) {
-        if (err.name === "AbortError") {
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") {
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantId ? { ...m, streaming: false } : m
@@ -197,8 +200,8 @@ export function ChatInterface() {
           )
         );
         setIsStreaming(false);
-      } catch (err: any) {
-        if (err.name === "AbortError") {
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") {
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantId ? { ...m, streaming: false } : m

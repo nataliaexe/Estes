@@ -14,7 +14,6 @@ from app.core.database import get_session
 from app.core.logging import get_logger
 from app.schemas.ia import PerguntaIA
 from app.services.ia_agent import (
-    ContextoAgente,
     SYSTEM_PROMPT,
     _fmt_plataforma,
     _fmt_web,

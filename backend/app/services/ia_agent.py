@@ -88,7 +88,6 @@ Pergunta: "{pergunta}"
 Responda APENAS com uma palavra: PLATAFORMA, WEB, NOVO_MATERIAL, AMBAS ou CONVERSA."""
 
     try:
-        from app.core.config import settings
         resposta = await completar_cascata(
             [{"role": "user", "content": prompt}],
             temperatura=0.0,

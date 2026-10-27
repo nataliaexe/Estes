@@ -11,12 +11,23 @@ type Usuario = {
   municipio: string | null;
 };
 
+type RegistroDados = {
+  nome: string;
+  email: string;
+  senha: string;
+  perfil: string;
+  uf?: string | null;
+  municipio?: string | null;
+};
+
+type AuthResponse = { access_token: string; usuario: Usuario };
+
 type AuthContextType = {
   usuario: Usuario | null;
   token: string | null;
   carregando: boolean;
   entrar: (email: string, senha: string) => Promise<void>;
-  registrar: (dados: any) => Promise<void>;
+  registrar: (dados: RegistroDados) => Promise<void>;
   sair: () => void;
 };
 
@@ -31,13 +42,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    const t = localStorage.getItem("estes_token");
-    const u = localStorage.getItem("estes_usuario");
-    if (t && u) {
-      setToken(t);
-      setUsuario(JSON.parse(u));
-    }
-    setCarregando(false);
+    const timeout = window.setTimeout(() => {
+      const savedToken = localStorage.getItem("estes_token");
+      const savedUser = localStorage.getItem("estes_usuario");
+      if (savedToken && savedUser) {
+        try {
+          setToken(savedToken);
+          setUsuario(JSON.parse(savedUser) as Usuario);
+        } catch {
+          localStorage.removeItem("estes_token");
+          localStorage.removeItem("estes_usuario");
+        }
+      }
+      setCarregando(false);
+    }, 0);
+    return () => window.clearTimeout(timeout);
   }, []);
 
   async function entrar(email: string, senha: string) {
@@ -50,14 +69,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const err = await r.json();
       throw new Error(err.detail || "Erro ao entrar");
     }
-    const data = await r.json();
+    const data = (await r.json()) as AuthResponse;
     localStorage.setItem("estes_token", data.access_token);
     localStorage.setItem("estes_usuario", JSON.stringify(data.usuario));
     setToken(data.access_token);
     setUsuario(data.usuario);
   }
 
-  async function registrar(dados: any) {
+  async function registrar(dados: RegistroDados) {
     const r = await fetch(`${API}/auth/registrar`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -67,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const err = await r.json();
       throw new Error(err.detail || "Erro ao registrar");
     }
-    const data = await r.json();
+    const data = (await r.json()) as AuthResponse;
     localStorage.setItem("estes_token", data.access_token);
     localStorage.setItem("estes_usuario", JSON.stringify(data.usuario));
     setToken(data.access_token);

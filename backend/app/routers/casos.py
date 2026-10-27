@@ -9,9 +9,6 @@ from app.core.i18n import normalizar_idioma, traduzir, traduzir_lista
 from app.models.caso import Caso
 from app.schemas.caso import (
     CasoBusca,
-    CasoBuscaResultado,
-    CasoDetalhe,
-    CasoResumo,
 )
 from app.services.busca_plataforma import buscar_plataforma
 
