@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 
 from app.core.config import settings
 from app.core.logging import get_logger
+from app.services.ai_validator import AIExtractionValidator
 from app.services.ciencia import Paper, atualizar_evidencia_paper
 from app.services.ia_providers import ProvedorIndisponivel, completar_cascata
 
@@ -167,6 +168,36 @@ def _fallback_por_keyword(
     )
 
 
+def _validar_evidencia(
+    evidencia: Evidencia | None,
+    paper: Paper,
+    ai_confidence: float | None = None,
+) -> Evidencia | None:
+    if evidencia is None:
+        return None
+
+    validation = AIExtractionValidator.validate_extraction(
+        extracted_text=evidencia.claim,
+        original_text=paper.abstract or "",
+        ai_confidence=ai_confidence,
+        literal_quote=evidencia.trecho,
+    )
+    if not validation["is_valid"]:
+        log.warning(
+            "evidencia_rejeitada_pelo_validador",
+            paper=paper.titulo[:50],
+            avisos=validation["warnings"],
+        )
+        return None
+
+    evidencia.limitacoes = (
+        f"{evidencia.limitacoes.rstrip('. ')}. "
+        "A correspondência literal foi confirmada; a relação entre trecho e "
+        "afirmação ainda exige revisão humana."
+    )
+    return evidencia
+
+
 async def extrair_evidencia(
     paper: Paper, material: str, problema: str
 ) -> Evidencia | None:
@@ -197,7 +228,9 @@ Abstract: {paper.abstract[:1500]}
         )
     except ProvedorIndisponivel as e:
         log.warning("extracao_llm_falhou", erro=str(e)[:150])
-        return _fallback_por_keyword(paper, material, problema)
+        return _validar_evidencia(
+            _fallback_por_keyword(paper, material, problema), paper, ai_confidence=0.3
+        )
 
     texto = resposta.texto.strip()
     dados = _extrair_json(texto)
@@ -208,7 +241,9 @@ Abstract: {paper.abstract[:1500]}
             paper=paper.titulo[:50],
             trecho=texto[:200],
         )
-        return _fallback_por_keyword(paper, material, problema)
+        return _validar_evidencia(
+            _fallback_por_keyword(paper, material, problema), paper, ai_confidence=0.3
+        )
 
     if not dados.get("aplicavel"):
         motivo = dados.get("motivo", "sem motivo")
@@ -219,42 +254,46 @@ Abstract: {paper.abstract[:1500]}
         )
         return None
 
-    claim = dados.get("claim", "").strip()
-    trecho = dados.get("trecho", "").strip()
+    claim = dados.get("claim", "")
+    trecho = dados.get("trecho", "")
+    if not isinstance(claim, str) or not isinstance(trecho, str):
+        log.warning("claim_ou_trecho_tipo_invalido", paper=paper.titulo[:50])
+        return _validar_evidencia(
+            _fallback_por_keyword(paper, material, problema), paper, ai_confidence=0.3
+        )
 
+    claim = claim.strip()
+    trecho = trecho.strip()
     if not claim or not trecho:
         log.warning("claim_ou_trecho_vazio", paper=paper.titulo[:50])
-        return _fallback_por_keyword(paper, material, problema)
-
-    trecho_norm = re.sub(r"\s+", " ", trecho.lower())[:80]
-    abstract_norm = re.sub(r"\s+", " ", paper.abstract.lower())
-
-    forca_base = float(dados.get("forca", 0.5))
-
-    if trecho_norm and trecho_norm not in abstract_norm:
-        log.warning(
-            "trecho_nao_encontrado",
-            paper=paper.titulo[:50],
-            trecho=trecho_norm[:60],
+        return _validar_evidencia(
+            _fallback_por_keyword(paper, material, problema), paper, ai_confidence=0.3
         )
-        forca = min(forca_base, 0.4)
-        tipo_marcador = " (trecho nao verificado)"
-    else:
-        forca = forca_base
-        tipo_marcador = ""
 
-    return Evidencia(
+    raw_confidence = dados.get("forca", 0.5)
+    if not isinstance(raw_confidence, (int, float)) or isinstance(raw_confidence, bool):
+        log.warning("confianca_tipo_invalido", paper=paper.titulo[:50])
+        return None
+
+    try:
+        forca = float(raw_confidence)
+    except (TypeError, ValueError):
+        log.warning("confianca_invalida", paper=paper.titulo[:50])
+        return None
+
+    evidencia = Evidencia(
         claim=claim,
         source=f"{paper.titulo} ({paper.ano or 's/d'})",
         doi=paper.doi,
         url=paper.url,
         trecho=trecho,
-        tipo=dados.get("tipo", "observacao") + tipo_marcador,
-        limitacoes=dados.get("limitacoes", "nao especificadas"),
-        aplicabilidade=dados.get("aplicabilidade", ""),
-        nivel=dados.get("nivel", "hipotese"),
+        tipo=str(dados.get("tipo", "observacao")),
+        limitacoes=str(dados.get("limitacoes", "nao especificadas")),
+        aplicabilidade=str(dados.get("aplicabilidade", "")),
+        nivel=str(dados.get("nivel", "hipotese")),
         forca=forca,
     )
+    return _validar_evidencia(evidencia, paper, ai_confidence=forca)
 
 
 @dataclass

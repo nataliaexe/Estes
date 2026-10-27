@@ -12,6 +12,7 @@ from app.core.enums import CaseStatus
 if TYPE_CHECKING:
     from app.models.evidence import Evidence
     from app.models.hypothesis import Hypothesis
+    from app.models.lineage import DataLineage
     from app.models.protocol import Protocol
 
 
@@ -40,6 +41,9 @@ class Case(Base):
     )
     protocols: Mapped[list["Protocol"]] = relationship(
         back_populates="case", cascade="all, delete-orphan"
+    )
+    lineage_records: Mapped[list["DataLineage"]] = relationship(
+        cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:

@@ -14,7 +14,7 @@ export function Cursor3D() {
     trailPositions.current = Array.from({ length: 10 }, () => new THREE.Vector3());
   }, []);
 
-  useFrame((state) => {
+  useFrame(() => {
     if (cursorRef.current && trailRef.current) {
       // Convert mouse to 3D position
       const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);

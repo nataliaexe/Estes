@@ -12,10 +12,6 @@ const TileLayer = dynamic(
   () => import("react-leaflet").then((m) => m.TileLayer),
   { ssr: false }
 );
-const Marker = dynamic(
-  () => import("react-leaflet").then((m) => m.Marker),
-  { ssr: false }
-);
 const Popup = dynamic(
   () => import("react-leaflet").then((m) => m.Popup),
   { ssr: false }

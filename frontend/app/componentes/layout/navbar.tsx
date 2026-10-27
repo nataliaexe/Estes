@@ -19,6 +19,7 @@ export function Navbar() {
     { href: "/", label: t.nav.home },
     { href: "/investigar/nova", label: t.nav.investigate },
     { href: "/casos", label: t.nav.cases },
+    { href: "/simulacao", label: t.nav.simulation },
     { href: "/quantum-cell", label: t.nav.quantumCell },
     { href: "/sobre", label: t.nav.about },
   ];

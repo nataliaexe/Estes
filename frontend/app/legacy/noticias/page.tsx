@@ -1,6 +1,6 @@
 import { ScrollReveal } from "../componentes/efeitos/ScrollReveal";
 import Link from "next/link";
-import { ArrowRight, Calendar, MapPin, Heart, MessageCircle } from "lucide-react";
+import { ArrowRight, Calendar, MapPin } from "lucide-react";
 
 const noticias = [
   {

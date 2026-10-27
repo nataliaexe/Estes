@@ -11,7 +11,8 @@ O repositório contém:
 - **Frontend:** Next.js 16 e React 19, com páginas para atlas de casos, exploração, evidências, notícias, chat, contribuição e medição.
 - **API:** FastAPI com rotas para casos, ciência, clima, queimadas, notícias, documentos, contribuições e IA.
 - **Busca científica:** integrações implementadas para Semantic Scholar, Crossref e OpenAlex, com persistência/cache em PostgreSQL e busca opcional na web via Tavily.
-- **Extração de evidências:** fluxo que usa abstracts disponíveis e pede trechos literais, limitações e classificação à IA. Isso não equivale a revisão sistemática nem valida por si só a fidelidade da extração.
+- **Extração de evidências:** fluxo que usa abstracts disponíveis e pede trechos literais, limitações e classificação à IA. Um validador estrito rejeita trechos sem correspondência literal, números ausentes do trecho e confiança fora da faixa; a validação não comprova que a afirmação decorre semanticamente da fonte, então a revisão humana continua obrigatória.
+- **Modo Simulação:** cenários locais e determinísticos com conteúdo explicitamente sintético. Não consulta APIs e não deve ser interpretado como medição ambiental nem como referência científica.
 - **Infraestrutura local:** PostgreSQL com pgvector e Redis via Docker Compose; migrações Alembic.
 - **Testes automatizados:** testes assíncronos da API, dos parsers científicos, da extração de evidências e do comportamento dos probes.
 
@@ -84,7 +85,7 @@ npm run lint
 npm run build
 ```
 
-O build de produção usa Webpack. O lint foi ligado ao ESLint recomendado pelo Next.js; ele ainda aponta pendências herdadas no frontend. Consulte o resultado mais recente antes de tratar as verificações como critério de release.
+O build de produção usa Webpack. O ESLint usa as regras recomendadas pelo Next.js; execute novamente as verificações após alterações.
 
 ## Pitch e Quantum Cell
 
@@ -92,4 +93,4 @@ O pitch deve separar claramente funcionalidades presentes, integrações configu
 
 ## Licença
 
-O README anterior indicava MIT, mas não havia arquivo de licença rastreado. A licença precisa ser definida e incluída antes de descrever o repositório como formalmente licenciado como código aberto.
+Este projeto é distribuído sob a licença MIT. Consulte o arquivo [LICENSE](./LICENSE) para os termos completos.

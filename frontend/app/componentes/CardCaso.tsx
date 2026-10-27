@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MapPin, Cpu, Heart, MessageCircle, Users, TrendingUp } from "lucide-react";
+import { MapPin, Cpu, Heart, Users, TrendingUp } from "lucide-react";
 import { Badge, type BadgeProps } from "./ui/badge";
-import { cn } from "../lib/utils";
 
 type Caso = {
   numero: number;

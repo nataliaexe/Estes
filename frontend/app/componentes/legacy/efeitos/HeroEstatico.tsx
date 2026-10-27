@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Search } from "lucide-react";
+import { Sparkles, Search } from "lucide-react";
 
 const EXEMPLOS = [
   { material: "eucalyptus", problema: "contaminated water" },

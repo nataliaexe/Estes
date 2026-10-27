@@ -14,8 +14,6 @@ interface ParticleImageProps {
   cursorRadius?: number;
   className?: string;
   children?: React.ReactNode;
-  /** Cor base quando não há imagem */
-  fallbackColor?: string;
 }
 
 /**
@@ -39,7 +37,6 @@ export function ParticleImage({
   cursorRadius = 100,
   className = "",
   children,
-  fallbackColor = "#4bf98d",
 }: ParticleImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);

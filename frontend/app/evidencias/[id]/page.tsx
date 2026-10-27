@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { useI18n } from "../../lib/i18n/useI18n";
 import { api } from "../../lib/api";
 import type { Evidence } from "../../lib/types";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 
 export default function EvidenceDetail() {
   const { t } = useI18n();
   const params = useParams();
-  const router = useRouter();
   const evidenceId = params.id as string;
   const [loading, setLoading] = useState(true);
   const [evidence, setEvidence] = useState<Evidence | null>(null);

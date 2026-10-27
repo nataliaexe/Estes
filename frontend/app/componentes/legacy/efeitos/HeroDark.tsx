@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, Search, Sparkles } from "lucide-react";
+import { Search, Sparkles } from "lucide-react";
 import { ParticleImage } from "./ParticleImage";
 
 const EXEMPLOS = [

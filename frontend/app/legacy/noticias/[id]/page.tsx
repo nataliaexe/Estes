@@ -1,8 +1,7 @@
 import { ScrollReveal } from "../../componentes/efeitos/ScrollReveal";
 import Link from "next/link";
 import {
-  ArrowLeft, ArrowRight, Calendar, MapPin, Heart, MessageCircle,
-  Share2, Bookmark, Leaf, FlaskConical, Users,
+  ArrowLeft, ArrowRight, Calendar, MapPin, Leaf, FlaskConical,
 } from "lucide-react";
 
 type NoticiaDetail = {

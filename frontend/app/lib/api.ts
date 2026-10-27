@@ -11,6 +11,20 @@ async function fetcher<T>(path: string, opts?: RequestInit): Promise<T> {
 
 import type { Case, Evidence, Material, Hypothesis, Protocol } from "./types";
 
+interface SearchResult {
+  title: string;
+  authors: string[];
+  year?: number;
+  doi?: string;
+  abstract?: string;
+  url?: string;
+  source: string;
+  journal?: string;
+  citations?: number;
+  evidence?: Record<string, unknown>;
+  paper_id?: string;
+}
+
 export type Caso = {
   id: string;
   numero: number;
@@ -177,7 +191,7 @@ export const api = {
   },
   search: {
     scientific: (query: string, caseId?: string) =>
-      fetcher<any>("/search/scientific", {
+      fetcher<{ query: string; results: SearchResult[]; total: number }>("/search/scientific", {
         method: "POST",
         body: JSON.stringify({ query, case_id: caseId }),
       }),

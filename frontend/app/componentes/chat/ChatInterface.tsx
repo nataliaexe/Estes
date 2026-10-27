@@ -344,7 +344,7 @@ export function ChatInterface() {
               {messages.length === 0 ? (
                 <p className="text-xs text-elfo-cinza">No conversations yet</p>
               ) : (
-                messages.map((msg, idx) => (
+                messages.map((msg) => (
                   <button
                     key={msg.id}
                     onClick={() => {

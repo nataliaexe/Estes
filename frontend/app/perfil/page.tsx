@@ -4,8 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  User as UserIcon, Bell, Bookmark, Settings, LogOut, MapPin,
-  FlaskConical, Heart, MessageCircle, ArrowRight,
+  User as UserIcon, Bell, Bookmark, Settings, LogOut,
 } from "lucide-react";
 import { Button } from "../componentes/ui/button";
 import { useAuth } from "../contextos/AuthContext";
@@ -21,7 +20,7 @@ const ABAS = [
 ];
 
 export default function PerfilPage() {
-  const { usuario, token, sair } = useAuth();
+  const { usuario, sair } = useAuth();
   const router = useRouter();
   const [aba, setAba] = useState("perfil");
 

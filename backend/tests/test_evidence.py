@@ -11,7 +11,7 @@ def test_json_parser_accepts_markdown_wrapped_response():
 
 
 @pytest.mark.asyncio
-async def test_extracted_quote_is_flagged_when_not_in_abstract(monkeypatch):
+async def test_extraction_with_unmatched_quote_is_rejected(monkeypatch):
     async def fake_completion(*args, **kwargs):
         return RespostaIA(
             texto=(
@@ -35,9 +35,44 @@ async def test_extracted_quote_is_flagged_when_not_in_abstract(monkeypatch):
 
     result = await evidencia.extrair_evidencia(paper, "cellulose", "water sensing")
 
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_extraction_with_exact_quote_requires_human_review(monkeypatch):
+    source_quote = (
+        "Lead concentration increased downstream from the industrial site."
+    )
+
+    async def fake_completion(*args, **kwargs):
+        return RespostaIA(
+            texto=(
+                '{"aplicavel": true, "claim": "Lead concentration increased downstream.", '
+                f'"trecho": "{source_quote}", '
+                '"tipo": "experimento", "limitacoes": "small sample", '
+                '"aplicabilidade": "uncertain", "nivel": "hipotese", '
+                '"forca": 0.9}'
+            ),
+            provedor="test",
+            modelo="test-model",
+        )
+
+    monkeypatch.setattr(evidencia, "completar_cascata", fake_completion)
+    paper = Paper(
+        titulo="Source paper",
+        ano=2024,
+        abstract=(
+            "This study measured water quality in the river. "
+            f"{source_quote} The method was observational."
+        ),
+        fonte="test",
+    )
+
+    result = await evidencia.extrair_evidencia(paper, "cellulose", "water sensing")
+
     assert result is not None
-    assert result.forca == 0.4
-    assert "trecho nao verificado" in result.tipo
+    assert result.trecho == source_quote
+    assert "revisão humana" in result.limitacoes
 
 
 @pytest.mark.asyncio

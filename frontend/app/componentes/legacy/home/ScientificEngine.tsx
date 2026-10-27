@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Search, BookOpen, FlaskConical, ArrowRight, ExternalLink } from "lucide-react";
 import { ScrollReveal } from "../efeitos/ScrollReveal";
-import { StaggerContainer, StaggerItem } from "../efeitos/StaggerContainer";
 
 export function ScientificEngine() {
   return (

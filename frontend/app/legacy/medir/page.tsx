@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Camera, Upload, CheckCircle2, AlertTriangle, XCircle, RotateCcw, Info } from "lucide-react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 const API =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
@@ -126,8 +127,15 @@ export default function MedirPage() {
             </>
           ) : (
             <div className="space-y-6">
-              <div className="relative rounded-2xl overflow-hidden border-2 border-elfo-dourado/20">
-                <img src={preview} alt="preview" className="w-full max-h-96 object-contain bg-black" />
+              <div className="relative h-96 rounded-2xl overflow-hidden border-2 border-elfo-dourado/20 bg-black">
+                <Image
+                  src={preview}
+                  alt="Preview da imagem"
+                  fill
+                  sizes="100vw"
+                  unoptimized
+                  className="object-contain"
+                />
                 {analisando && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                     <motion.div

@@ -3,6 +3,7 @@
 import { useRef, useState, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Camera, ArrowUp, Square, X } from "lucide-react";
+import Image from "next/image";
 
 interface ChatInputProps {
   disabled?: boolean;
@@ -64,9 +65,12 @@ export function ChatInput({
             exit={{ opacity: 0, height: 0, marginBottom: 0 }}
             className="relative inline-block"
           >
-            <img
+            <Image
               src={preview}
               alt="Attached photo preview"
+              width={80}
+              height={80}
+              unoptimized
               className="h-20 w-20 rounded-lg border border-elfo-verde-escuro/20 object-cover"
             />
             <button

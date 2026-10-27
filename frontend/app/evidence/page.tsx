@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Search, ArrowRight } from "lucide-react";
+import { BookOpen, ArrowRight } from "lucide-react";
 
 export const metadata = {
   title: "Evidence Explorer - ESTES",

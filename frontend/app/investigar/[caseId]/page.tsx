@@ -5,6 +5,7 @@ import { useI18n } from "../../lib/i18n/useI18n";
 import { api } from "../../lib/api";
 import type { Case, Evidence, Material, Hypothesis, Protocol } from "../../lib/types";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 export default function InvestigacaoDetalhe() {
   const { t } = useI18n();

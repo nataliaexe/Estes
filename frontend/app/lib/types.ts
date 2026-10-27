@@ -31,7 +31,7 @@ export interface Material {
   category: string;
   region?: string;
   availability?: string;
-  properties: Record<string, any>;
+  properties: Record<string, string | number | boolean>;
   relevance?: string;
   source?: string;
 }
@@ -51,7 +51,7 @@ export interface Hypothesis {
 export interface Protocol {
   id: string;
   case_id: string;
-  steps: Record<string, any>[];
+  steps: Array<{ description?: string; duration?: string } | string>;
   materials_needed: string[];
   equipment_needed: string[];
   objectives?: string;

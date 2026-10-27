@@ -6,6 +6,7 @@ from app.models.documento import Documento
 from app.models.evidence import Evidence
 from app.models.evidencia import Evidencia
 from app.models.hypothesis import Hypothesis
+from app.models.lineage import DataLineage
 from app.models.material import Material
 from app.models.medicao import Medicao
 from app.models.noticia import Noticia
@@ -24,6 +25,7 @@ __all__ = [
     "Evidence",
     "Evidencia",
     "Hypothesis",
+    "DataLineage",
     "Material",
     "Medicao",
     "Noticia",

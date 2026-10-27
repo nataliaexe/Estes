@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Shield, FileText, Building2, MapPin, ArrowRight } from "lucide-react";
+import { FileText, Building2, MapPin, ArrowRight } from "lucide-react";
 import { ScrollReveal } from "../efeitos/ScrollReveal";
 import { StaggerContainer, StaggerItem } from "../efeitos/StaggerContainer";
 

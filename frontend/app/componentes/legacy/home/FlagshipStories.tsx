@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote, MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -140,9 +141,12 @@ export function FlagshipStories() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="relative rounded-3xl overflow-hidden shadow-2xl"
             >
-              <img
+              <Image
                 src={s.foto}
                 alt={s.povo}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                unoptimized
                 className="w-full h-full object-cover"
               />
               <div

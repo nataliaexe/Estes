@@ -12,6 +12,7 @@ from app.api.routes import (
     cases,
     evidence,
     hypotheses,
+    lineage,
     materials,
     protocols,
     search,
@@ -72,6 +73,7 @@ app.include_router(evidence.router, prefix=PREFIX)
 app.include_router(materials.router, prefix=PREFIX)
 app.include_router(hypotheses.router, prefix=PREFIX)
 app.include_router(protocols.router, prefix=PREFIX)
+app.include_router(lineage.router, prefix=PREFIX)
 app.include_router(search.router, prefix=PREFIX)
 app.include_router(health.router, prefix=PREFIX)
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote, MapPin } from "lucide-react";
@@ -88,9 +89,12 @@ export function CardSwap({
             className="relative h-[400px] md:h-[500px] overflow-hidden"
             style={{ background: `linear-gradient(135deg, ${h.cor}40, #114224)` }}
           >
-            <img
+            <Image
               src={h.foto}
               alt={h.povo}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              unoptimized
               className="w-full h-full object-cover opacity-90 mix-blend-luminosity"
             />
             <div

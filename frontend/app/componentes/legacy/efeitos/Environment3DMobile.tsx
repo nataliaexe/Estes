@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useRef, useMemo, Suspense } from 'react';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { seededRandom } from '@/app/lib/seededRandom';
 import { 

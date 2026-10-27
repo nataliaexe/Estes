@@ -6,6 +6,7 @@ import {
   Copy, BookmarkPlus, Check, ExternalLink, ScanEye, Leaf, FileText,
 } from "lucide-react";
 import type { ChatMessage } from "../../lib/chat/types";
+import Image from "next/image";
 
 interface MessageBubbleProps {
   message: ChatMessage;
@@ -45,9 +46,12 @@ export function MessageBubble({ message, onSave }: MessageBubbleProps) {
         }`}
       >
         {message.imageUrl && (
-          <img
+          <Image
             src={message.imageUrl}
             alt="User attached photo"
+            width={160}
+            height={160}
+            unoptimized
             className="h-40 w-40 rounded-xl border border-elfo-verde-escuro/15 object-cover"
           />
         )}
